@@ -1093,7 +1093,7 @@ function loadDB() {
 
 function saveDB() {
   localStorage.setItem(DB_KEY, JSON.stringify(db));
-  if (typeof GDRIVE !== "undefined") GDRIVE.saveData(db);
+  setTimeout(() => { if (typeof GDRIVE !== "undefined") GDRIVE.saveData(db); }, 0);
 }
 
 function getDefaultDB() {
@@ -3111,7 +3111,7 @@ const GDRIVE = {
   },
 };
 
-GDRIVE.init();
+window.addEventListener("load", () => GDRIVE.init());
 
 
 // ═══════════════════════════════════════════════════════
@@ -3121,8 +3121,8 @@ GDRIVE.init();
 const BELT_COLORS = { branca:'#e0e0e0', azul:'#4d8fff', roxa:'#b347ff', marrom:'#a0522d', preta:'#111' };
 const FINALIZACOES = ['Armlock','Kimura','Americana','Triângulo','Omoplata','Guilhotina','D\'Arce','Rear Naked Choke','Leg Lock','Heel Hook','Katagatame','Brabo Choke','Outro'];
 
-let _sparringAdvAtivo = null;
-let _finalizacoes = [];
+var _sparringAdvAtivo = null;
+var _finalizacoes = [];
 
 function renderSparring() {
   renderAdversarios();
