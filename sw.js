@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mind-tracker-v2';
+const CACHE_NAME = 'mind-tracker-v3';
 const ASSETS = [
   '/mind-tracker/',
   '/mind-tracker/index.html',
