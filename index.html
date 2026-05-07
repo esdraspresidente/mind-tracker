@@ -530,19 +530,44 @@ h1,h2,h3,h4,h5{font-family:'Syne',sans-serif;line-height:1.2}
   .xp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(max-width:640px){
-  #app{padding:16px 14px}
-  .header-inner{height:54px;padding:0 14px}
-  .tabs-nav{width:100%}
-  .stats-grid,.stats-grid-3{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .stat-value{font-size:clamp(1.4rem,5vw,2rem)}
-  .modal{padding:18px}
+  /* Header mobile */
+  #app{padding:12px}
+  .header-inner{height:auto;padding:10px 12px;flex-wrap:wrap;gap:8px}
+  .logo-text{font-size:14px}
+  .logo-icon{width:28px;height:28px;font-size:14px}
+  /* Esconde texto do sync, mostra só o dot */
+  #sync-label{display:none}
+  .sync-btn{padding:0 8px;gap:4px}
+  /* Filtros Esdras/Alexandre menores */
+  .filter-tab{padding:4px 8px;font-size:11px}
+  /* Tabs nav: scroll horizontal */
+  .tabs-nav{
+    width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;flex-wrap:nowrap;
+  }
+  .tabs-nav::-webkit-scrollbar{display:none}
+  .tab-btn{padding:8px 12px;font-size:12px;gap:4px;flex-shrink:0}
+  .tab-btn .tab-icon{font-size:14px}
+  /* Stats grid */
+  .stats-grid,.stats-grid-3{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat-card{padding:12px}
+  .stat-value{font-size:clamp(1.3rem,6vw,2rem)}
+  .stat-label{font-size:10px}
+  /* Modais */
+  .modal{padding:16px;margin:8px;max-height:92vh;overflow-y:auto}
   .livros-grid{grid-template-columns:1fr}
   .xp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .treino-stats{display:none}
-  .filter-tab{padding:4px 10px;font-size:11px}
+  /* Formulários */
+  .form-grid{grid-template-columns:1fr}
+  /* Seção header */
+  .section-header{flex-wrap:wrap;gap:8px}
+  /* Sparring detail responsive */
+  #sparring-layout{grid-template-columns:1fr!important}
 }
 @media(max-width:400px){
   .stats-grid,.stats-grid-3{grid-template-columns:1fr}
+  .tab-btn{padding:7px 10px;font-size:11px}
 }
 
 /* ── SYNC BTN ── */
@@ -592,7 +617,7 @@ h1,h2,h3,h4,h5{font-family:'Syne',sans-serif;line-height:1.2}
       <div class="logo-icon">⚡</div>
       <span class="logo-text">Mind Tracker <span class="logo-year">2026</span></span>
     </a>
-    <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
       <div class="filter-tabs">
         <button class="filter-tab active" onclick="setFiltro('esdras')">Esdras</button>
         <button class="filter-tab" onclick="setFiltro('alexandre')">Alexandre</button>
