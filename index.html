@@ -1,10 +1,578 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mind Tracker 2026</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0f">
+<title>Mind Tracker 2026</title>
+<link rel="manifest" href="#" id="manifest-link">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   MIND TRACKER 2026 — DESIGN SYSTEM
+   Tema: Athletic Dashboard
+   Fontes: Syne (display) + DM Sans (body)
+══════════════════════════════════════════════ */
 
+/* ── DARK THEME (default) ── */
+:root, [data-theme="dark"] {
+  --bg:       #07070f;
+  --bg2:      #0d0d1a;
+  --bg3:      #111120;
+  --card:     #14142a;
+  --card2:    #18183a;
+  --border:   #22223a;
+  --border2:  #2e2e55;
+  --text:     #f0f0ff;
+  --text2:    #8888b8;
+  --text3:    #44446a;
+  --shadow:   0 2px 20px rgba(0,0,0,.6);
+  --shadow-lg:0 8px 48px rgba(0,0,0,.8);
+  --theme-icon: "☀️";
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+  --bg:       #f4f4f8;
+  --bg2:      #ffffff;
+  --bg3:      #eaeaf2;
+  --card:     #ffffff;
+  --card2:    #f8f8fc;
+  --border:   #dddde8;
+  --border2:  #c8c8dc;
+  --text:     #111128;
+  --text2:    #555578;
+  --text3:    #aaaacc;
+  --shadow:   0 2px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.14);
+  --theme-icon: "🌙";
+}
+
+/* ── SHARED ACCENT COLORS ── */
+:root, [data-theme="dark"], [data-theme="light"] {
+  --green:      #00e676;
+  --green2:     #00c853;
+  --green-dim:  rgba(0,230,118,.1);
+  --green-glow: rgba(0,230,118,.22);
+  --blue:       #4d8fff;
+  --blue-dim:   rgba(77,143,255,.1);
+  --orange:     #ff6b35;
+  --orange-dim: rgba(255,107,53,.1);
+  --purple:     #b347ff;
+  --purple-dim: rgba(179,71,255,.1);
+  --red:        #ff2d55;
+  --red-dim:    rgba(255,45,85,.1);
+  --yellow:     #ffd60a;
+  --yellow-dim: rgba(255,214,10,.1);
+  --r:          14px;
+  --r-sm:       9px;
+  --t:          all .18s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── RESET ── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  font-size:15px;
+  line-height:1.5;
+  transition:background .3s, color .3s;
+}
+h1,h2,h3,h4,h5{font-family:'Syne',sans-serif;line-height:1.2}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+
+/* ══════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════ */
+#header{
+  position:sticky;top:0;z-index:100;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.header-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:62px;padding:0 28px;gap:16px;
+}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-icon{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;box-shadow:0 0 18px var(--green-glow);flex-shrink:0;
+}
+.logo-text{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--text);white-space:nowrap}
+.logo-year{color:var(--green)}
+.header-right{display:flex;align-items:center;gap:10px}
+
+/* Theme toggle button */
+.theme-toggle{
+  width:34px;height:34px;border-radius:9px;
+  border:1px solid var(--border);background:var(--card);
+  color:var(--text2);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:16px;transition:var(--t);flex-shrink:0;
+}
+.theme-toggle:hover{border-color:var(--green);color:var(--green)}
+
+.user-avatar{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  border-radius:50%;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  color:#000;flex-shrink:0;
+}
+
+/* ── FILTER TABS ── */
+.filter-tabs{
+  display:flex;gap:2px;
+  background:var(--bg3);border-radius:var(--r-sm);
+  padding:3px;border:1px solid var(--border);
+}
+.filter-tab{
+  padding:5px 16px;border-radius:7px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  border:none;background:transparent;color:var(--text2);
+  transition:var(--t);font-family:'Syne',sans-serif;letter-spacing:.03em;
+}
+.filter-tab.active{background:var(--green);color:#000;box-shadow:0 0 10px var(--green-glow)}
+.filter-tab:not(.active):hover{color:var(--text);background:var(--card)}
+
+/* ══════════════════════════════════════════════
+   MAIN LAYOUT
+══════════════════════════════════════════════ */
+#app{max-width:1400px;margin:0 auto;padding:28px 28px}
+
+/* ── TABS NAV ── */
+.tabs-nav{
+  display:flex;gap:2px;margin-bottom:28px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:4px;width:fit-content;overflow-x:auto;
+}
+.tab-btn{
+  padding:9px 20px;border-radius:calc(var(--r) - 4px);
+  font-size:13px;font-weight:700;cursor:pointer;
+  border:none;background:transparent;color:var(--text2);
+  transition:var(--t);display:flex;align-items:center;gap:7px;
+  font-family:'Syne',sans-serif;white-space:nowrap;
+}
+.tab-btn.active{background:var(--card2);color:var(--text);box-shadow:var(--shadow)}
+.tab-btn:not(.active):hover{color:var(--text);background:color-mix(in srgb,var(--border) 40%,transparent)}
+.tab-btn .tab-icon{font-size:16px}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════════════════════════════════
+   STAT CARDS  — problema principal corrigido aqui
+══════════════════════════════════════════════ */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr)); /* minmax(0,1fr) impede overflow */
+  gap:14px;margin-bottom:16px;
+}
+.stats-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 20px;
+  transition:var(--t);min-width:0;
+}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat-label{
+  font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:10px;
+  font-family:'Syne',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.stat-value{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.8rem, 2.2vw, 2.8rem);
+  font-weight:800;color:var(--green);
+  line-height:1;display:flex;align-items:baseline;gap:5px;
+  min-width:0;
+}
+.stat-unit{
+  font-size:clamp(.75rem, 1.2vw, .95rem);
+  font-weight:500;color:var(--text2);
+}
+.stat-card.blue  .stat-value{color:var(--blue)}
+.stat-card.orange .stat-value{color:var(--orange)}
+.stat-card.purple .stat-value{color:var(--purple)}
+
+/* ── SECTION HEADER ── */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;gap:12px;flex-wrap:wrap;
+}
+.section-title{
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  display:flex;align-items:center;gap:9px;color:var(--text);
+}
+.section-title .icon{font-size:19px}
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════ */
+.btn{
+  padding:8px 18px;border-radius:var(--r-sm);
+  font-size:12px;font-weight:700;cursor:pointer;
+  border:none;transition:var(--t);display:inline-flex;
+  align-items:center;gap:6px;font-family:'Syne',sans-serif;
+  text-decoration:none;white-space:nowrap;
+}
+.btn-primary{background:var(--green);color:#000;box-shadow:0 0 14px var(--green-glow)}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{border-color:var(--green);color:var(--green)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--card);color:var(--text)}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,45,85,.2)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-sm{padding:5px 12px;font-size:11px}
+.btn-icon{padding:6px;border-radius:7px;font-size:14px;line-height:1}
+
+/* ══════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:18px;padding:26px;
+  width:100%;max-width:510px;max-height:90vh;overflow-y:auto;
+  transform:scale(.96);transition:transform .2s;box-shadow:var(--shadow-lg);
+}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800}
+.modal-close{
+  width:30px;height:30px;border-radius:8px;border:1px solid var(--border);
+  background:var(--card);color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:17px;transition:var(--t);
+}
+.modal-close:hover{border-color:var(--red);color:var(--red)}
+
+/* ── FORM ── */
+.form-group{margin-bottom:16px}
+.form-label{
+  font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:6px;
+  display:block;font-family:'Syne',sans-serif;
+}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:9px 13px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r-sm);color:var(--text);font-size:14px;
+  font-family:'DM Sans',sans-serif;transition:var(--t);outline:none;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim);
+}
+.form-select{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238888b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;padding-right:33px;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}
+
+/* ══════════════════════════════════════════════
+   TREINO LIST
+══════════════════════════════════════════════ */
+.treino-list{display:flex;flex-direction:column;gap:6px}
+.treino-item{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:13px 18px;
+  display:flex;align-items:center;gap:12px;transition:var(--t);
+}
+.treino-item:hover{border-color:var(--border2);background:var(--card2)}
+.treino-badge{
+  padding:4px 11px;border-radius:20px;
+  font-size:11px;font-weight:700;font-family:'Syne',sans-serif;
+  white-space:nowrap;flex-shrink:0;
+}
+.badge-jj    {background:var(--purple-dim);color:var(--purple);border:1px solid rgba(179,71,255,.2)}
+.badge-cardio{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(77,143,255,.2)}
+.badge-ferro {background:var(--orange-dim);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.badge-natacao{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+.badge-futebol{background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(255,214,10,.2)}
+.treino-info{flex:1;min-width:0}
+.treino-date{font-size:11px;color:var(--text3);margin-bottom:2px}
+.treino-details{font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.treino-stats{display:flex;gap:16px;flex-shrink:0}
+.treino-stat{text-align:right}
+.treino-stat-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--text)}
+.treino-stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.treino-actions{display:flex;gap:4px;flex-shrink:0}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{background:var(--bg3);border-radius:99px;height:7px;overflow:hidden;border:1px solid var(--border)}
+.progress-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--green),var(--blue));
+  transition:width .6s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 7px var(--green-glow);
+}
+
+/* ── XP CARD ── */
+.xp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:22px}
+.xp-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.xp-item{
+  text-align:center;padding:14px 8px;
+  background:var(--bg3);border-radius:var(--r-sm);border:1px solid var(--border);
+}
+.xp-item-val{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.2rem,2vw,1.8rem);
+  font-weight:800;color:var(--yellow);line-height:1.1;
+  display:flex;flex-direction:column;align-items:center;
+}
+.xp-item-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:5px;font-family:'Syne',sans-serif}
+.xp-item.green  .xp-item-val{color:var(--green)}
+.xp-item.blue   .xp-item-val{color:var(--blue)}
+.xp-item.orange .xp-item-val{color:var(--orange)}
+.xp-item.purple .xp-item-val{color:var(--purple)}
+.xp-progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:7px}
+
+/* ── ATIVIDADES ── */
+.atividade-list{display:flex;flex-direction:column;gap:5px}
+.atividade-item{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px 16px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;transition:var(--t);
+}
+.atividade-item:hover{border-color:var(--border2);background:var(--card2)}
+.atividade-item.done{border-color:var(--green);background:rgba(0,230,118,.06)}
+.atividade-check{
+  width:21px;height:21px;border-radius:50%;border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;flex-shrink:0;transition:var(--t);
+}
+.atividade-item.done .atividade-check{background:var(--green);border-color:var(--green);color:#000}
+.atividade-nome{flex:1;font-size:13px;font-weight:500}
+.atividade-pts{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
+  color:var(--text3);background:var(--bg3);
+  padding:3px 8px;border-radius:99px;border:1px solid var(--border);flex-shrink:0;
+}
+.atividade-item.done .atividade-pts{color:var(--green);border-color:rgba(0,230,118,.3);background:rgba(0,230,118,.08)}
+.atividade-status{font-size:11px;color:var(--text3);flex-shrink:0}
+.atividade-item.done .atividade-status{color:var(--green)}
+
+/* ── LIVROS ── */
+.livros-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.livro-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px;transition:var(--t);
+  display:flex;flex-direction:column;gap:11px;
+}
+.livro-card:hover{border-color:var(--border2)}
+.livro-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800}
+.livro-author{font-size:12px;color:var(--text3)}
+.livro-percent{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;color:var(--green)}
+.tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;font-family:'Syne',sans-serif}
+.tag-cristao {background:var(--blue-dim);color:var(--blue)}
+.tag-secular  {background:var(--orange-dim);color:var(--orange)}
+.tag-lendo    {background:var(--green-dim);color:var(--green)}
+.tag-concluido{background:var(--purple-dim);color:var(--purple)}
+
+/* ── META CARD ── */
+.meta-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;margin-bottom:14px;transition:var(--t);
+}
+.meta-card:hover{border-color:var(--border2)}
+.meta-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.meta-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
+.meta-progress-big{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:800;color:var(--green)}
+.meta-sub{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── TERMO ── */
+.termo-content{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;line-height:1.8;
+  font-size:13px;color:var(--text2);white-space:pre-wrap;
+  max-height:55vh;overflow-y:auto;
+}
+
+/* ── CALENDAR ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.cal-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:800}
+.cal-nav{display:flex;gap:6px;align-items:center}
+.cal-btn{
+  width:33px;height:33px;border-radius:var(--r-sm);
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:15px;transition:var(--t);
+}
+.cal-btn:hover{border-color:var(--green);color:var(--green)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{
+  text-align:center;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text3);padding:8px 0;font-family:'Syne',sans-serif;
+}
+.cal-day{
+  aspect-ratio:1;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid transparent;transition:var(--t);
+  font-family:'Syne',sans-serif;position:relative;
+}
+.cal-day.empty{cursor:default}
+.cal-day.today{border-color:var(--green)!important;color:var(--green)}
+.cal-day.has-treino-jj    {background:rgba(179,71,255,.14);color:var(--purple)}
+.cal-day.has-treino-cardio{background:rgba(77,143,255,.14);color:var(--blue)}
+.cal-day.has-treino-ferro {background:rgba(255,107,53,.14);color:var(--orange)}
+.cal-day.has-treino-multi {background:linear-gradient(135deg,rgba(0,230,118,.14),rgba(77,143,255,.14));color:var(--green)}
+.cal-day.has-treino-1     {background:var(--green-dim);color:var(--green)}
+.cal-day.no-treino        {background:var(--bg3);color:var(--text3)}
+.cal-day:not(.empty):hover{border-color:var(--border2)!important;transform:scale(1.07)}
+.cal-dots{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);display:flex;gap:2px}
+.cal-dot{width:3px;height:3px;border-radius:50%}
+
+/* ── BOSS FIGHT ── */
+.boss-card{
+  background:linear-gradient(135deg,var(--card),rgba(255,45,85,.04));
+  border:1px solid rgba(255,45,85,.2);border-radius:var(--r);padding:20px;
+}
+.boss-name{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--red)}
+.boss-hp-bar{background:var(--bg3);border-radius:99px;height:10px;overflow:hidden;margin:8px 0;border:1px solid var(--border)}
+.boss-hp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--red),var(--orange));box-shadow:0 0 8px rgba(255,45,85,.3);transition:width .6s}
+
+/* ── STRAVA BANNER ── */
+.strava-banner{
+  background:linear-gradient(135deg,rgba(255,107,53,.1),rgba(255,107,53,.04));
+  border:1px solid rgba(255,107,53,.2);border-radius:var(--r);
+  padding:14px 18px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;
+}
+.strava-info{display:flex;align-items:center;gap:12px}
+.strava-icon{font-size:26px}
+.strava-text h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--orange)}
+.strava-text p{font-size:11px;color:var(--text3);margin-top:1px}
+
+/* ── GEO BANNER ── */
+.geo-banner{
+  background:var(--blue-dim);border:1px solid rgba(77,143,255,.2);
+  border-radius:var(--r);padding:13px 16px;
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;
+}
+.geo-icon{font-size:18px}
+.geo-text{font-size:12px;color:var(--text2);flex:1}
+.geo-text strong{color:var(--blue)}
+
+/* ── CHART ── */
+.chart-area{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:18px}
+.chart-bars{display:flex;align-items:flex-end;gap:5px;height:120px;margin-top:12px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.chart-bar{
+  width:100%;border-radius:4px 4px 0 0;
+  background:linear-gradient(180deg,var(--green),var(--green2));
+  transition:height .5s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 6px var(--green-glow);cursor:pointer;
+}
+.chart-bar.blue  {background:linear-gradient(180deg,var(--blue),#1c55cc);box-shadow:0 0 6px rgba(77,143,255,.25)}
+.chart-bar.orange{background:linear-gradient(180deg,var(--orange),#cc3800);box-shadow:0 0 6px rgba(255,107,53,.25)}
+.chart-bar:hover{filter:brightness(1.15)}
+.chart-bar-lbl{font-size:9px;color:var(--text3);text-align:center;font-weight:700;font-family:'Syne',sans-serif}
+.chart-bar-num{font-size:10px;color:var(--text2);font-weight:700;font-family:'Syne',sans-serif;min-height:14px}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:44px 20px;color:var(--text3);display:flex;flex-direction:column;align-items:center;gap:10px}
+.empty-state .empty-icon{font-size:42px;opacity:.3}
+.empty-state p{font-size:13px}
+
+/* ── MISC ── */
+.divider{height:1px;background:var(--border);margin:20px 0}
+.period-select{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:6px 10px;color:var(--text);
+  font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;outline:none;
+}
+.period-select:focus{border-color:var(--green)}
+.toggle-wrap{display:flex;align-items:center;gap:10px}
+.toggle{width:38px;height:21px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;position:relative;cursor:pointer;transition:var(--t);flex-shrink:0}
+.toggle.on{background:var(--green);border-color:var(--green)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle.on::after{transform:translateX(17px)}
+.toggle-label{font-size:13px;color:var(--text2)}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:22px;right:22px;z-index:999;
+  background:var(--card2);border:1px solid var(--border2);
+  border-radius:var(--r);padding:11px 16px;font-size:13px;
+  font-weight:500;color:var(--text);box-shadow:var(--shadow-lg);
+  transform:translateY(70px);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+#toast.show{transform:translateY(0)}
+#toast.success{border-color:var(--green)}
+#toast.error{border-color:var(--red)}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media(max-width:1000px){
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats-grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .xp-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  #app{padding:16px 14px}
+  .header-inner{height:54px;padding:0 14px}
+  .tabs-nav{width:100%}
+  .stats-grid,.stats-grid-3{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .stat-value{font-size:clamp(1.4rem,5vw,2rem)}
+  .modal{padding:18px}
+  .livros-grid{grid-template-columns:1fr}
+  .xp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .treino-stats{display:none}
+  .filter-tab{padding:4px 10px;font-size:11px}
+}
+@media(max-width:400px){
+  .stats-grid,.stats-grid-3{grid-template-columns:1fr}
+}
+
+/* ── SYNC BTN ── */
+.sync-btn{height:34px;padding:0 12px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;transition:var(--t);flex-shrink:0;white-space:nowrap}
+.sync-btn:hover{border-color:var(--blue);color:var(--blue)}
+.sync-btn.connected{border-color:var(--green-dim);color:var(--green)}
+.sync-btn.syncing{border-color:var(--yellow-dim);color:var(--yellow);animation:pulse-sync 1s infinite}
+.sync-btn.error{border-color:var(--red-dim);color:var(--red)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+@keyframes pulse-sync{0%,100%{opacity:1}50%{opacity:.4}}
+/* ── SPARRING ── */
+.adv-card{padding:12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card);cursor:pointer;transition:var(--t);margin-bottom:8px}
+.adv-card:hover,.adv-card.active{border-color:var(--purple);background:var(--card2)}
+.adv-card-top{display:flex;align-items:center;gap:10px}
+.belt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.adv-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
+.adv-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.adv-winrate{margin-left:auto;font-family:'Syne',sans-serif;font-weight:800;font-size:15px}
+.rola-item{padding:12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card);margin-bottom:8px;transition:var(--t)}
+.rola-item:hover{border-color:var(--border2)}
+.resultado-btn{padding:8px 4px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:var(--t)}
+.resultado-btn.active{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+.resultado-btn[data-val="lost"].active{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.resultado-btn[data-val="draw"].active{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim)}
+.fin-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.fin-row select,.fin-row input{flex:1;padding:6px 8px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:12px}
+@media(max-width:700px){#sparring-layout{grid-template-columns:1fr}}
+</style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://apis.google.com/js/api.js" async defer></script>
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -12,772 +580,48 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Mind Tracker">
-  <meta name="theme-color" content="#0d0d14">
+  <meta name="theme-color" content="#00e676">
   <meta name="mobile-web-app-capable" content="yes">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    /* Fallback enquanto fontes carregam */
-    @font-face {
-      font-family: 'Syne';
-      font-style: normal;
-      font-weight: 700 800;
-      font-display: swap;
-      src: local('Syne Bold');
-    }
-  </style>
-
-  <!-- Google Drive + Identity -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
-
-<style>
-/* ════════════════════════════════════════════
-   TOKENS
-════════════════════════════════════════════ */
-:root {
-  --bg:       #0d0d14;
-  --bg2:      #12121c;
-  --bg3:      #16162200;
-  --surface:  #1a1a28;
-  --surface2: #1f1f30;
-  --border:   #ffffff0f;
-  --border2:  #ffffff18;
-  --text:     #f0f0f8;
-  --text2:    #8888aa;
-  --text3:    #55556a;
-  --green:    #00e676;
-  --green-dim:#00e67618;
-  --green-glow:#00e67630;
-  --blue:     #4d8fff;
-  --blue-dim: #4d8fff18;
-  --purple:   #b347ff;
-  --purple-dim:#b347ff18;
-  --red:      #ff4d6a;
-  --red-dim:  #ff4d6a18;
-  --yellow:   #ffd600;
-  --yellow-dim:#ffd60018;
-  --orange:   #ff7043;
-  --r:        14px;
-  --r-sm:     10px;
-  --t:        all .18s cubic-bezier(.4,0,.2,1);
-  --shadow:   0 4px 24px #00000040;
-  --sidebar-w: 240px;
-  --sidebar-w-collapsed: 68px;
-  --header-h: 60px;
-}
-[data-theme="light"] {
-  --bg:#f5f5f7;--bg2:#ebebef;--bg3:#e2e2e8;
-  --surface:#ffffff;--surface2:#f8f8fc;
-  --border:#00000010;--border2:#00000018;
-  --text:#0d0d14;--text2:#55556a;--text3:#9999b0;
-  --green-glow:#00e67620;
-}
-
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{height:100%;overflow:hidden}
-body{
-  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);color:var(--text);
-  height:100%;overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-}
-
-/* ════════════════════════════════════════════
-   APP SHELL — sidebar + main
-════════════════════════════════════════════ */
-#shell{
-  display:flex;height:100vh;overflow:hidden;
-  position:relative;
-}
-
-/* ── OVERLAY (mobile) ── */
-#overlay{
-  display:none;position:fixed;inset:0;
-  background:#00000080;z-index:99;
-  backdrop-filter:blur(2px);
-  opacity:0;transition:opacity .25s;
-}
-#overlay.show{display:block;opacity:1}
-
-/* ════════════════════════════════════════════
-   SIDEBAR
-════════════════════════════════════════════ */
-#sidebar{
-  width:var(--sidebar-w);
-  flex-shrink:0;
-  display:flex;flex-direction:column;
-  background:var(--surface);
-  border-right:1px solid var(--border);
-  height:100vh;
-  position:relative;
-  z-index:100;
-  transition:width .25s cubic-bezier(.4,0,.2,1);
-  overflow:hidden;
-}
-#sidebar.collapsed{width:var(--sidebar-w-collapsed)}
-
-/* Sidebar header */
-.sb-header{
-  display:flex;align-items:center;gap:10px;
-  padding:18px 16px 14px;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-  min-height:var(--header-h);
-}
-.sb-logo-icon{
-  width:36px;height:36px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--green),var(--blue));
-  border-radius:10px;display:flex;align-items:center;justify-content:center;
-  font-size:18px;box-shadow:0 0 20px var(--green-glow);
-}
-.sb-logo-text{
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:15px;
-  white-space:nowrap;overflow:hidden;
-  transition:opacity .2s,width .25s;
-}
-.sb-logo-text span{color:var(--green)}
-#sidebar.collapsed .sb-logo-text{opacity:0;width:0}
-
-/* User selector */
-.sb-user{
-  padding:10px 12px;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.sb-user-inner{
-  display:flex;gap:4px;
-  background:var(--bg2);border-radius:var(--r-sm);
-  padding:3px;
-}
-.filter-tab{
-  flex:1;padding:5px 0;
-  border-radius:7px;border:none;
-  background:transparent;color:var(--text2);
-  font-size:11px;font-weight:700;cursor:pointer;
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-  transition:var(--t);white-space:nowrap;
-  display:flex;align-items:center;justify-content:center;
-}
-.filter-tab.active{background:var(--green);color:#000;box-shadow:0 0 10px var(--green-glow)}
-#sidebar.collapsed .sb-user{display:none}
-
-/* Nav items */
-.sb-nav{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  padding:10px 8px;
-  display:flex;flex-direction:column;gap:2px;
-  scrollbar-width:none;
-}
-.sb-nav::-webkit-scrollbar{display:none}
-
-.nav-item{
-  display:flex;align-items:center;gap:12px;
-  padding:10px 10px;border-radius:var(--r-sm);
-  cursor:pointer;transition:var(--t);
-  border:1px solid transparent;
-  color:var(--text2);
-  position:relative;
-  white-space:nowrap;
-  min-height:42px;
-}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{
-  background:var(--green-dim);
-  color:var(--green);
-  border-color:var(--green-glow);
-}
-.nav-icon{
-  font-size:18px;flex-shrink:0;width:24px;
-  display:flex;align-items:center;justify-content:center;
-}
-.nav-label{
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:13px;font-weight:700;
-  transition:opacity .2s;
-  flex:1;
-}
-#sidebar.collapsed .nav-label{opacity:0;pointer-events:none}
-.nav-badge{
-  font-size:10px;font-weight:800;
-  padding:2px 6px;border-radius:99px;
-  background:var(--green-dim);color:var(--green);
-  transition:opacity .2s;
-}
-#sidebar.collapsed .nav-badge{opacity:0}
-
-/* Tooltip on collapsed */
-#sidebar.collapsed .nav-item:hover::after{
-  content:attr(data-label);
-  position:absolute;left:calc(var(--sidebar-w-collapsed) + 8px);
-  background:var(--surface2);color:var(--text);
-  padding:6px 12px;border-radius:8px;
-  font-size:12px;font-weight:700;font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-  white-space:nowrap;z-index:200;
-  border:1px solid var(--border2);
-  box-shadow:var(--shadow);
-}
-
-/* Sidebar footer */
-.sb-footer{
-  padding:10px 8px;
-  border-top:1px solid var(--border);
-  display:flex;flex-direction:column;gap:4px;
-  flex-shrink:0;
-}
-.sb-footer-btn{
-  display:flex;align-items:center;gap:12px;
-  padding:9px 10px;border-radius:var(--r-sm);
-  cursor:pointer;transition:var(--t);
-  border:none;background:transparent;color:var(--text2);
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:12px;font-weight:600;
-  white-space:nowrap;min-height:38px;width:100%;
-}
-.sb-footer-btn:hover{background:var(--surface2);color:var(--text)}
-.sb-footer-btn .nav-icon{font-size:16px}
-#sidebar.collapsed .sb-footer-btn span:last-child{opacity:0}
-
-/* Collapse toggle */
-#collapse-btn{
-  position:absolute;top:18px;right:-13px;
-  width:26px;height:26px;border-radius:50%;
-  background:var(--surface2);border:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:110;
-  transition:var(--t);font-size:12px;color:var(--text2);
-}
-#collapse-btn:hover{background:var(--green);color:#000;border-color:var(--green)}
-@media(max-width:768px){#collapse-btn{display:none}}
-
-/* ════════════════════════════════════════════
-   MAIN CONTENT
-════════════════════════════════════════════ */
-#main{
-  flex:1;display:flex;flex-direction:column;
-  overflow:hidden;min-width:0;
-}
-
-/* Top bar */
-#topbar{
-  height:var(--header-h);flex-shrink:0;
-  display:flex;align-items:center;gap:12px;
-  padding:0 24px;
-  border-bottom:1px solid var(--border);
-  background:var(--bg);
-}
-#menu-btn{
-  display:none;
-  width:36px;height:36px;border-radius:9px;
-  border:1px solid var(--border);background:var(--surface);
-  color:var(--text2);cursor:pointer;
-  align-items:center;justify-content:center;font-size:18px;
-  flex-shrink:0;
-}
-#page-title{
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:18px;
-  flex:1;
-}
-.topbar-actions{
-  display:flex;align-items:center;gap:8px;
-}
-.topbar-btn{
-  height:34px;padding:0 12px;border-radius:9px;
-  border:1px solid var(--border);background:var(--surface);
-  color:var(--text2);cursor:pointer;
-  display:flex;align-items:center;gap:6px;
-  font-size:12px;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-weight:500;
-  transition:var(--t);flex-shrink:0;white-space:nowrap;
-}
-.topbar-btn:hover{border-color:var(--border2);color:var(--text)}
-.sync-btn{}
-.sync-btn.connected{border-color:var(--green-dim);color:var(--green)}
-.sync-btn.syncing{border-color:var(--yellow-dim);color:var(--yellow);animation:pulse-sync 1s infinite}
-.sync-btn.error{border-color:var(--red-dim);color:var(--red)}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
-@keyframes pulse-sync{0%,100%{opacity:1}50%{opacity:.4}}
-
-.user-avatar{
-  width:34px;height:34px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:12px;
-  color:#000;flex-shrink:0;cursor:pointer;
-  transition:var(--t);
-}
-
-/* Page content */
-#content{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  padding:28px 28px;
-  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
-}
-#content::-webkit-scrollbar{width:6px}
-#content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-
-/* Tab panels */
-.tab-panel{display:none}
-.tab-panel.active{display:block;animation:fadeIn .2s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* ════════════════════════════════════════════
-   COMPONENTS
-════════════════════════════════════════════ */
-/* Cards */
-.card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:20px;
-}
-.card2{background:var(--surface2)}
-
-/* Stats grid */
-.stats-grid{
-  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;margin-bottom:20px;
-}
-.stats-grid-3{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;margin-bottom:20px;
-}
-.stat-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:16px 18px;
-  transition:var(--t);overflow:hidden;
-}
-.stat-card:hover{border-color:var(--border2)}
-.stat-card.green{border-left:3px solid var(--green)}
-.stat-card.blue{border-left:3px solid var(--blue)}
-.stat-card.purple{border-left:3px solid var(--purple)}
-.stat-card.orange{border-left:3px solid var(--orange)}
-.stat-card.red{border-left:3px solid var(--red)}
-.stat-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
-.stat-value{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:clamp(1.4rem,5vw,2.2rem);line-height:1}
-.stat-value .unit{font-size:.5em;font-weight:400;color:var(--text2);margin-left:2px}
-
-/* Section header */
-.section-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:18px;gap:12px;flex-wrap:wrap;
-}
-.section-title{
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:17px;
-}
-
-/* Buttons */
-.btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:9px 18px;border-radius:var(--r-sm);
-  font-size:13px;font-weight:700;cursor:pointer;
-  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  border:1px solid transparent;transition:var(--t);
-  white-space:nowrap;
-}
-.btn-primary{background:var(--green);color:#000;border-color:var(--green)}
-.btn-primary:hover{box-shadow:0 0 20px var(--green-glow);transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border)}
-.btn-ghost:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
-.btn-danger{background:var(--red-dim);color:var(--red);border-color:var(--red-dim)}
-.btn-danger:hover{background:var(--red);color:#fff}
-.btn-sm{padding:6px 12px;font-size:12px}
-.btn-icon{padding:6px 8px}
-
-/* Badges */
-.badge{padding:3px 8px;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.03em}
-.badge-jj{background:#b347ff22;color:var(--purple)}
-.badge-cardio{background:#4d8fff22;color:var(--blue)}
-.badge-ferro{background:#ff704322;color:var(--orange)}
-.badge-natacao{background:#00e67622;color:var(--green)}
-.badge-futebol{background:#ffd60022;color:var(--yellow)}
-
-/* Treino items */
-.treino-item{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 16px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r-sm);margin-bottom:8px;
-  transition:var(--t);
-}
-.treino-item:hover{border-color:var(--border2);background:var(--surface2)}
-.treino-badge{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800}
-.treino-info{flex:1;min-width:0}
-.treino-date{font-size:13px;font-weight:600}
-.treino-meta{font-size:11px;color:var(--text2);margin-top:2px}
-.treino-details{font-size:11px;color:var(--text2);margin-top:2px}
-.treino-actions{display:flex;gap:4px;flex-shrink:0}
-.treino-stats{font-size:11px;color:var(--text2);text-align:right;flex-shrink:0}
-
-/* Forms */
-.form-group{margin-bottom:14px}
-.form-label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
-.form-input{
-  width:100%;padding:10px 12px;border-radius:var(--r-sm);
-  border:1px solid var(--border);background:var(--bg2);
-  color:var(--text);font-size:13px;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  transition:var(--t);outline:none;
-}
-.form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-textarea.form-input{resize:vertical;min-height:70px}
-
-/* Modals */
-.modal-overlay{
-  position:fixed;inset:0;background:#00000070;
-  display:flex;align-items:center;justify-content:center;
-  z-index:500;opacity:0;pointer-events:none;
-  transition:opacity .2s;backdrop-filter:blur(4px);
-  padding:16px;
-}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{
-  background:var(--surface);border:1px solid var(--border2);
-  border-radius:calc(var(--r) + 4px);padding:24px;
-  width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
-  transform:scale(.96) translateY(8px);
-  transition:transform .2s cubic-bezier(.4,0,.2,1);
-  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
-}
-.modal-overlay.open .modal{transform:scale(1) translateY(0)}
-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.modal-title{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:16px}
-.modal-close{
-  width:28px;height:28px;border-radius:50%;
-  border:1px solid var(--border);background:transparent;
-  color:var(--text2);cursor:pointer;font-size:16px;
-  display:flex;align-items:center;justify-content:center;
-  transition:var(--t);
-}
-.modal-close:hover{background:var(--red-dim);color:var(--red);border-color:var(--red-dim)}
-.modal-body{}
-.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
-
-/* XP / Níveis */
-.xp-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
-.xp-bar-outer{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-top:8px}
-.xp-bar-inner{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .8s cubic-bezier(.4,0,.2,1)}
-
-/* Habit items */
-.habit-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r-sm);margin-bottom:6px;
-  transition:var(--t);
-}
-.habit-check{
-  width:22px;height:22px;border-radius:6px;flex-shrink:0;
-  border:2px solid var(--border2);background:transparent;
-  cursor:pointer;transition:var(--t);display:flex;align-items:center;justify-content:center;
-  font-size:12px;
-}
-.habit-check.done{background:var(--green);border-color:var(--green);color:#000}
-
-/* Calendar */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-dow{text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:4px 0;letter-spacing:.04em}
-.cal-day{
-  position:relative;
-  border-radius:8px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-size:12px;font-weight:600;cursor:pointer;
-  transition:var(--t);border:1px solid transparent;
-  padding:6px 2px 4px;gap:3px;min-height:44px;
-}
-.cal-day:hover{background:var(--surface2)}
-.cal-day.today{border-color:var(--green);color:var(--green);font-weight:800}
-.cal-day.other-month{opacity:.25}
-.cal-day.no-treino{}
-/* Cores por modalidade */
-.cal-day.has-treino-jj{background:var(--purple-dim)}
-.cal-day.has-treino-jj .cal-day-num{color:var(--purple)}
-.cal-day.has-treino-cardio{background:var(--blue-dim)}
-.cal-day.has-treino-cardio .cal-day-num{color:var(--blue)}
-.cal-day.has-treino-ferro{background:#ff704318}
-.cal-day.has-treino-ferro .cal-day-num{color:var(--orange)}
-.cal-day.has-treino-1{background:var(--green-dim)}
-.cal-day.has-treino-1 .cal-day-num{color:var(--green)}
-.cal-day.has-treino-multi{background:linear-gradient(135deg,var(--purple-dim),var(--blue-dim))}
-.cal-day.has-treino-multi .cal-day-num{color:var(--text)}
-/* Dots */
-.cal-dots{display:flex;gap:2px;align-items:center;justify-content:center}
-.cal-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.cal-day-num{line-height:1}
-
-/* Meta anual */
-.meta-row{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;background:var(--surface);
-  border:1px solid var(--border);border-radius:var(--r-sm);
-  margin-bottom:8px;
-}
-.meta-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px;flex-wrap:wrap}
-.meta-progress{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;flex:1}
-.meta-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .6s}
-
-/* Boss fight */
-.boss-bar{height:10px;border-radius:5px;background:var(--bg2);overflow:hidden;margin:8px 0}
-.boss-hp{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--red),var(--orange));transition:width .8s}
-.player-bar{height:10px;border-radius:5px;background:var(--bg2);overflow:hidden;margin:8px 0}
-.player-hp{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .8s}
-
-/* Livros */
-.livros-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.livro-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;transition:var(--t)}
-.livro-card:hover{border-color:var(--border2)}
-.livro-progress{height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;margin-top:10px}
-.livro-bar{height:100%;background:var(--green);border-radius:2px;transition:width .4s}
-
-/* Sparring */
-.adv-card{padding:12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:var(--t);margin-bottom:8px}
-.adv-card:hover,.adv-card.active{border-color:var(--purple);background:var(--surface2)}
-.adv-card-top{display:flex;align-items:center;gap:10px}
-.belt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.adv-name{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:14px}
-.adv-meta{font-size:11px;color:var(--text3);margin-top:2px}
-.adv-winrate{margin-left:auto;font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:15px}
-.rola-item{padding:12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:8px;transition:var(--t)}
-.rola-item:hover{border-color:var(--border2)}
-.resultado-btn{padding:8px 4px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;font-size:12px;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;transition:var(--t)}
-.resultado-btn.active{border-color:var(--green);color:var(--green);background:var(--green-dim)}
-.resultado-btn[data-val="lost"].active{border-color:var(--red);color:var(--red);background:var(--red-dim)}
-.resultado-btn[data-val="draw"].active{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim)}
-.fin-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
-.fin-row select,.fin-row input{flex:1;padding:6px 8px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:12px}
-
-/* ── XP / HÁBITOS ── */
-.xp-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:18px;margin-bottom:20px;
-}
-.xp-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
-.xp-item{
-  background:var(--bg2);border-radius:var(--r-sm);
-  padding:12px 8px;text-align:center;
-  border:1px solid var(--border);
-}
-.xp-item.purple{border-color:var(--purple-dim);background:var(--purple-dim)}
-.xp-item.green{border-color:var(--green-dim);background:var(--green-dim)}
-.xp-item.blue{border-color:var(--blue-dim);background:var(--blue-dim)}
-.xp-item.orange{border-color:#ff704318;background:#ff704318}
-.xp-item-val{
-  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;
-  font-size:clamp(1rem,3vw,1.4rem);line-height:1;margin-bottom:4px;
-}
-.xp-item.purple .xp-item-val{color:var(--purple)}
-.xp-item.green .xp-item-val{color:var(--green)}
-.xp-item.blue .xp-item-val{color:var(--blue)}
-.xp-item.orange .xp-item-val{color:var(--orange)}
-.xp-item-lbl{font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.xp-progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;color:var(--text2)}
-.progress-bar{height:8px;background:var(--bg2);border-radius:99px;overflow:hidden;border:1px solid var(--border)}
-.progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .8s cubic-bezier(.4,0,.2,1)}
-
-/* ── ATIVIDADES ── */
-.atividade-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-.atividade-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;background:var(--surface);
-  border:1px solid var(--border);border-radius:var(--r-sm);
-  transition:var(--t);cursor:pointer;
-}
-.atividade-item:hover{border-color:var(--border2)}
-.atividade-item.done{border-color:var(--green-dim);background:var(--green-dim)}
-.ativ-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
-.ativ-info{flex:1;min-width:0}
-.ativ-nome{font-weight:600;font-size:13px}
-.ativ-pts{font-size:11px;color:var(--text3);margin-top:2px}
-.ativ-status{font-size:11px;font-weight:700;flex-shrink:0}
-.ativ-status.ok{color:var(--green)}
-.ativ-status.pending{color:var(--text3)}
-
-/* ── DIVIDER ── */
-.divider{height:1px;background:var(--border);margin:20px 0}
-
-/* ── ICON inline ── */
-.icon{margin-right:6px}
-
-/* ── BTN SECONDARY ── */
-.btn-secondary{background:var(--surface2);color:var(--text);border-color:var(--border2)}
-.btn-secondary:hover{background:var(--surface);border-color:var(--green);color:var(--green)}
-
-/* Toast */
-#toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--surface2);border:1px solid var(--border2);
-  color:var(--text);padding:10px 20px;border-radius:99px;
-  font-size:13px;font-weight:600;
-  opacity:0;transition:all .3s;z-index:9999;
-  box-shadow:var(--shadow);white-space:nowrap;
-  pointer-events:none;
-}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* Empty state */
-.empty-state{text-align:center;padding:48px 20px;color:var(--text3)}
-.empty-icon{font-size:40px;margin-bottom:12px;opacity:.5}
-.empty-state p{font-size:14px}
-
-/* Strava banner */
-.strava-banner{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;border-radius:var(--r);
-  background:linear-gradient(135deg,#fc4c0220,#fc4c0210);
-  border:1px solid #fc4c0230;margin-bottom:20px;gap:12px;flex-wrap:wrap;
-}
-.strava-banner h4{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:14px;font-weight:800;color:#fc6a2a}
-.strava-banner p{font-size:12px;color:var(--text2);margin-top:2px}
-
-/* Chart bars */
-.chart-bars{
-  display:flex;align-items:flex-end;gap:6px;
-  height:140px;padding:0 4px;
-}
-.chart-bar-wrap{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;gap:4px;
-}
-.chart-bar{
-  width:100%;border-radius:5px 5px 0 0;
-  background:linear-gradient(180deg,var(--green),var(--blue));
-  opacity:.85;transition:height .4s cubic-bezier(.4,0,.2,1),opacity .2s;
-  min-height:4px;
-}
-.chart-bar:hover{opacity:1}
-.chart-bar-lbl{font-size:10px;color:var(--text3);font-weight:700}
-
-/* Meta row */
-.meta-row{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;background:var(--surface);
-  border:1px solid var(--border);border-radius:var(--r-sm);
-  margin-bottom:8px;flex-wrap:wrap;
-}
-
-/* Combo pills */
-.combo-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 12px;border-radius:99px;
-  font-size:12px;font-weight:700;
-  background:var(--green-dim);color:var(--green);
-  border:1px solid var(--green-glow);
-  margin:3px;
-}
-
-/* ── RESPONSIVE ── */
-@media(max-width:768px){
-  #sidebar{
-    position:fixed;left:-100%;top:0;height:100vh;
-    z-index:100;transition:left .28s cubic-bezier(.4,0,.2,1);
-    width:var(--sidebar-w)!important;
-  }
-  #sidebar.open{left:0}
-  #menu-btn{display:flex}
-  #content{padding:16px}
-  #topbar{padding:0 14px}
-  #page-title{font-size:15px}
-  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .stats-grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .xp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .livros-grid{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr}
-  .treino-stats{display:none}
-  #sparring-layout{grid-template-columns:1fr!important}
-  .modal{padding:18px;margin:0}
-  #sync-label{display:none}
-  .topbar-btn{padding:0 8px}
-}
-@media(max-width:400px){
-  .stats-grid{grid-template-columns:1fr}
-  .stat-value{font-size:1.6rem}
-}
-</style>
 </head>
 <body>
-<div id="shell">
 
-  <!-- OVERLAY -->
-  <div id="overlay" onclick="closeSidebar()"></div>
-
-  <!-- ══════════════ SIDEBAR ══════════════ -->
-  <nav id="sidebar">
-    <!-- Collapse toggle (desktop) -->
-    <button id="collapse-btn" onclick="toggleCollapse()" title="Recolher menu">‹</button>
-
-    <!-- Logo -->
-    <div class="sb-header">
-      <div class="sb-logo-icon">⚡</div>
-      <div class="sb-logo-text">Mind Tracker <span>2026</span></div>
+<!-- HEADER -->
+<header id="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">⚡</div>
+      <span class="logo-text">Mind Tracker <span class="logo-year">2026</span></span>
+    </a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="setFiltro('esdras')">Esdras</button>
+        <button class="filter-tab" onclick="setFiltro('alexandre')">Alexandre</button>
+        <button class="filter-tab" onclick="setFiltro('todos')">Todos</button>
+      </div>
+      <button class="sync-btn" id="sync-btn" onclick="GDRIVE.toggleAuth()"><span class="sync-dot"></span><span id="sync-label">Conectar Drive</span></button>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Alternar tema">☀️</button>
+      <button class="btn btn-ghost btn-sm" onclick="openModal('modal-termo')">📋 Termo</button>
+      <div class="user-avatar" title="Esdras Almeida">EA</div>
     </div>
+  </div>
+</header>
 
-    <!-- User filter -->
-    <div class="sb-user">
-      <div class="sb-user-inner">
-        <button class="filter-tab active" data-filtro="esdras" onclick="setFiltro('esdras')">Esdras</button>
-        <button class="filter-tab" data-filtro="alexandre" onclick="setFiltro('alexandre')">Ale</button>
-        <button class="filter-tab" data-filtro="todos" onclick="setFiltro('todos')">Todos</button>
-      </div>
-    </div>
+<!-- APP -->
+<div id="app">
 
-    <!-- Nav -->
-    <div class="sb-nav">
-      <div class="nav-item active" data-tab="treinos" data-label="Treinos" onclick="switchTab('treinos')">
-        <span class="nav-icon">🏋️</span>
-        <span class="nav-label">Treinos</span>
-      </div>
-      <div class="nav-item" data-tab="habitos" data-label="Hábitos" onclick="switchTab('habitos')">
-        <span class="nav-icon">📊</span>
-        <span class="nav-label">Hábitos</span>
-      </div>
-      <div class="nav-item" data-tab="leitura" data-label="Leitura" onclick="switchTab('leitura')">
-        <span class="nav-icon">📚</span>
-        <span class="nav-label">Leitura</span>
-      </div>
-      <div class="nav-item" data-tab="calendario" data-label="Calendário" onclick="switchTab('calendario')">
-        <span class="nav-icon">📅</span>
-        <span class="nav-label">Calendário</span>
-      </div>
-      <div class="nav-item" data-tab="sparring" data-label="Sparring" onclick="switchTab('sparring')">
-        <span class="nav-icon">🥋</span>
-        <span class="nav-label">Sparring</span>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="sb-footer">
-      <button class="sb-footer-btn" onclick="openModal('modal-termo')">
-        <span class="nav-icon">📋</span>
-        <span>Termo</span>
-      </button>
-      <button class="sb-footer-btn" onclick="toggleTheme()">
-        <span class="nav-icon" id="theme-icon">☀️</span>
-        <span id="theme-label">Tema claro</span>
-      </button>
-    </div>
+  <!-- TABS NAV -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab('treinos')"><span class="tab-icon">🏋️</span>Treinos</button>
+    <button class="tab-btn" onclick="switchTab('habitos')"><span class="tab-icon">📊</span>Hábitos</button>
+    <button class="tab-btn" onclick="switchTab('leitura')"><span class="tab-icon">📚</span>Leitura</button>
+    <button class="tab-btn" onclick="switchTab('calendario')"><span class="tab-icon">📅</span>Calendário</button>
+    <button class="tab-btn" onclick="switchTab('sparring')"><span class="tab-icon">🥋</span>Sparring</button>
   </nav>
 
-  <!-- ══════════════ MAIN ══════════════ -->
-  <div id="main">
-
-    <!-- Topbar -->
-    <div id="topbar">
-      <button id="menu-btn" onclick="openSidebar()">☰</button>
-      <div id="page-title">Treinos</div>
-      <div class="topbar-actions">
-        <button class="topbar-btn sync-btn" id="sync-btn" onclick="GDRIVE.toggleAuth()">
-          <span class="sync-dot"></span>
-          <span id="sync-label">Conectar Drive</span>
-        </button>
-        <div class="user-avatar" id="active-user-badge"
-          style="background:var(--green)"
-          onclick="setFiltro(filtroAtual === 'esdras' ? 'alexandre' : filtroAtual === 'alexandre' ? 'todos' : 'esdras')"
-          title="Alternar usuário">EA</div>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div id="content">
-
-      <!-- ── TREINOS ── -->
-      <div class="tab-panel active" id="panel-treinos">
+  <!-- ═══════════════════════════════════════════════════════
+       TAB: TREINOS
+  ═══════════════════════════════════════════════════════ -->
+  <div class="tab-panel active" id="panel-treinos">
 
     <!-- Strava Banner -->
     <div class="strava-banner">
@@ -853,8 +697,10 @@ textarea.form-input{resize:vertical;min-height:70px}
 
   </div>
 
-      <!-- ── HÁBITOS ── -->
-      <div class="tab-panel" id="panel-habitos">
+  <!-- ═══════════════════════════════════════════════════════
+       TAB: HÁBITOS
+  ═══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-habitos">
 
     <!-- XP Card -->
     <div class="xp-card">
@@ -891,7 +737,7 @@ textarea.form-input{resize:vertical;min-height:70px}
     <div class="section-header">
       <div class="section-title"><span class="icon">✅</span>Atividades do Dia</div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <span id="pontos-dia-badge" style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:14px;font-weight:800;color:var(--yellow);"></span>
+        <span id="pontos-dia-badge" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--yellow);"></span>
         <button class="btn btn-secondary btn-sm" onclick="openModal('modal-atividade')">+ Registrar</button>
       </div>
     </div>
@@ -910,8 +756,10 @@ textarea.form-input{resize:vertical;min-height:70px}
 
   </div>
 
-      <!-- ── LEITURA ── -->
-      <div class="tab-panel" id="panel-leitura">
+  <!-- ═══════════════════════════════════════════════════════
+       TAB: LEITURA
+  ═══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-leitura">
     <div class="section-header">
       <div class="section-title"><span class="icon">📚</span>Minha Biblioteca</div>
       <button class="btn btn-primary btn-sm" onclick="openModal('modal-livro')">+ Adicionar Livro</button>
@@ -922,8 +770,10 @@ textarea.form-input{resize:vertical;min-height:70px}
     <div class="livros-grid" id="livro-list"></div>
   </div>
 
-      <!-- ── CALENDÁRIO ── -->
-      <div class="tab-panel" id="panel-calendario">
+  <!-- ═══════════════════════════════════════════════════════
+       TAB: CALENDÁRIO
+  ═══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-calendario">
     <div class="cal-header">
       <div class="cal-nav">
         <button class="cal-btn" onclick="calNav(-1)">‹</button>
@@ -952,27 +802,13 @@ textarea.form-input{resize:vertical;min-height:70px}
     </div>
   </div>
 
-      <!-- ── SPARRING ── -->
-      <div class="tab-panel" id="panel-sparring">
-    <div class="section-header" style="margin-bottom:16px">
-      <h2 class="section-title">🥋 Diário de Sparring</h2>
-      <button class="btn btn-primary btn-sm" onclick="openModal('modal-adversario')">+ Adversário</button>
-    </div>
-    <div class="stats-grid" id="sparring-stats" style="margin-bottom:20px"></div>
-    <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start" id="sparring-layout">
-      <div>
-        <input type="text" id="sparring-search" placeholder="🔍 Buscar adversário..." oninput="renderAdversarios()" style="width:100%;padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;margin-bottom:10px">
-        <div id="adversarios-list"></div>
-      </div>
-      <div id="sparring-detail"><div class="empty-state"><div class="empty-icon">🥋</div><p>Selecione um adversário</p></div></div>
-    </div>
-  </div>
+</div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /shell -->
+<!-- ═══════════════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════════════ -->
 
-<!-- ══════════════ MODAIS ══════════════ -->
+<!-- Modal: Adicionar Treino -->
 <div class="modal-overlay" id="modal-treino">
 <div class="modal">
   <div class="modal-header">
@@ -1038,6 +874,39 @@ textarea.form-input{resize:vertical;min-height:70px}
   </div>
 </div>
 </div>
+
+<!-- Modal: Atividade Diária -->
+<div class="modal-overlay" id="modal-atividade">
+<div class="modal">
+  <div class="modal-header">
+    <h3 class="modal-title">✅ Registrar Atividade</h3>
+    <button class="modal-close" onclick="closeModal('modal-atividade')">×</button>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Atividade</label>
+    <select class="form-select" id="at-tipo" onchange="onAtivChange()">
+      <option value="agua">💧 Tomar Água</option>
+      <option value="sono">😴 Sono</option>
+      <option value="celular_banheiro">📵 Celular no Banheiro</option>
+      <option value="leitura_biblica">📖 Leitura Bíblica</option>
+      <option value="oracao">🙏 Oração</option>
+      <option value="leitura_diaria">📚 Leitura de Livros</option>
+      <option value="lavar_louca">🍽️ Lavar Louça</option>
+      <option value="chase">🐕 Chase (Cachorro)</option>
+      <option value="redes_sociais">🎯 Redes Sociais</option>
+      <option value="escritorio">🏢 Escritório</option>
+      <option value="series">📺 Séries</option>
+    </select>
+  </div>
+  <div id="at-fields"></div>
+  <div class="form-actions">
+    <button class="btn btn-ghost" onclick="closeModal('modal-atividade')">Cancelar</button>
+    <button class="btn btn-primary" onclick="salvarAtividade()">✅ Registrar</button>
+  </div>
+</div>
+</div>
+
+<!-- Modal: Livro -->
 <div class="modal-overlay" id="modal-livro">
 <div class="modal">
   <div class="modal-header">
@@ -1078,35 +947,8 @@ textarea.form-input{resize:vertical;min-height:70px}
   </div>
 </div>
 </div>
-<div class="modal-overlay" id="modal-atividade">
-<div class="modal">
-  <div class="modal-header">
-    <h3 class="modal-title">✅ Registrar Atividade</h3>
-    <button class="modal-close" onclick="closeModal('modal-atividade')">×</button>
-  </div>
-  <div class="form-group">
-    <label class="form-label">Atividade</label>
-    <select class="form-select" id="at-tipo" onchange="onAtivChange()">
-      <option value="agua">💧 Tomar Água</option>
-      <option value="sono">😴 Sono</option>
-      <option value="celular_banheiro">📵 Celular no Banheiro</option>
-      <option value="leitura_biblica">📖 Leitura Bíblica</option>
-      <option value="oracao">🙏 Oração</option>
-      <option value="leitura_diaria">📚 Leitura de Livros</option>
-      <option value="lavar_louca">🍽️ Lavar Louça</option>
-      <option value="chase">🐕 Chase (Cachorro)</option>
-      <option value="redes_sociais">🎯 Redes Sociais</option>
-      <option value="escritorio">🏢 Escritório</option>
-      <option value="series">📺 Séries</option>
-    </select>
-  </div>
-  <div id="at-fields"></div>
-  <div class="form-actions">
-    <button class="btn btn-ghost" onclick="closeModal('modal-atividade')">Cancelar</button>
-    <button class="btn btn-primary" onclick="salvarAtividade()">✅ Registrar</button>
-  </div>
-</div>
-</div>
+
+<!-- Modal: Termo -->
 <div class="modal-overlay" id="modal-termo">
 <div class="modal" style="max-width:620px">
   <div class="modal-header">
@@ -1123,6 +965,8 @@ textarea.form-input{resize:vertical;min-height:70px}
   </div>
 </div>
 </div>
+
+<!-- Modal: Resumo do Dia Anterior -->
 <div class="modal-overlay" id="modal-resumo-dia">
 <div class="modal" style="max-width:480px">
   <div class="modal-header">
@@ -1138,6 +982,8 @@ textarea.form-input{resize:vertical;min-height:70px}
   </div>
 </div>
 </div>
+
+<!-- Modal: Detalhe Treinos do Dia -->
 <div class="modal-overlay" id="modal-dia">
 <div class="modal">
   <div class="modal-header">
@@ -1150,83 +996,39 @@ textarea.form-input{resize:vertical;min-height:70px}
   </div>
 </div>
 </div>
-<div class="modal-overlay" id="modal-adversario" onclick="if(event.target===this)closeModal('modal-adversario')">
-  <div class="modal">
-    <div class="modal-header"><h3 class="modal-title" id="modal-adv-title">Adversário</h3><button class="modal-close" onclick="closeModal('modal-adversario')">×</button></div>
-    <div class="modal-body">
-      <input type="hidden" id="adv-id">
 
-      <div class="form-group">
-        <label class="form-label">Nome *</label>
-        <input type="text" id="adv-nome" class="form-input" placeholder="Nome do adversário">
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group">
-          <label class="form-label">Faixa *</label>
-          <select id="adv-faixa" class="form-input" onchange="onFaixaChange()">
-            <option value="branca">⬜ Branca</option>
-            <option value="verde">🟩 Verde</option>
-            <option value="azul">🟦 Azul</option>
-            <option value="roxa">🟣 Roxa</option>
-            <option value="marrom">🟫 Marrom</option>
-            <option value="preta">⬛ Preta</option>
-          </select>
-        </div>
-        <div class="form-group" id="grau-group">
-          <label class="form-label">Grau (branca)</label>
-          <select id="adv-grau" class="form-input">
-            <option value="">— Não informado —</option>
-            <option value="iniciante">Iniciante</option>
-            <option value="intermediario">Intermediário</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div class="form-group">
-          <label class="form-label">Gênero</label>
-          <select id="adv-genero" class="form-input" onchange="onPesoChange()">
-            <option value="m">Masculino</option>
-            <option value="f">Feminino</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Peso kg <span style="color:var(--text3);font-weight:400;font-size:10px">(opcional)</span></label>
-          <input type="number" id="adv-peso-kg" class="form-input" placeholder="Ex: 83" min="30" max="200" oninput="onPesoChange()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Categoria de peso</label>
-          <div id="adv-categoria" style="padding:10px 12px;border-radius:var(--r-sm);background:var(--bg2);border:1px solid var(--border);font-size:13px;color:var(--text3);min-height:40px;display:flex;align-items:center">
-            — pelo peso —
-          </div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group">
-          <label class="form-label">Idade <span style="color:var(--text3);font-weight:400;font-size:10px">(opcional)</span></label>
-          <input type="number" id="adv-idade" class="form-input" placeholder="Ex: 28" min="5" max="80" oninput="onIdadeChange()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Categoria etária</label>
-          <div id="adv-cat-etaria" style="padding:10px 12px;border-radius:var(--r-sm);background:var(--bg2);border:1px solid var(--border);font-size:13px;color:var(--text3);min-height:40px;display:flex;align-items:center">
-            — calculado pela idade —
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Notas <span style="color:var(--text3);font-weight:400;font-size:10px">(opcional)</span></label>
-        <textarea id="adv-notas" class="form-input" rows="2" placeholder="Estilo, pontos fortes, observações..."></textarea>
-      </div>
+  <div class="tab-panel" id="panel-sparring">
+    <div class="section-header" style="margin-bottom:16px">
+      <h2 class="section-title">🥋 Diário de Sparring</h2>
+      <button class="btn btn-primary btn-sm" onclick="openModal('modal-adversario')">+ Adversário</button>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-adversario')">Cancelar</button>
-      <button class="btn btn-primary" onclick="salvarAdversario()">Salvar</button>
+    <div class="stats-grid" id="sparring-stats" style="margin-bottom:20px"></div>
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start" id="sparring-layout">
+      <div>
+        <input type="text" id="sparring-search" placeholder="🔍 Buscar adversário..." oninput="renderAdversarios()" style="width:100%;padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;margin-bottom:10px">
+        <div id="adversarios-list"></div>
+      </div>
+      <div id="sparring-detail"><div class="empty-state"><div class="empty-icon">🥋</div><p>Selecione um adversário</p></div></div>
     </div>
   </div>
+
+<!-- MODAL: Adversário -->
+<div class="modal-overlay" id="modal-adversario" onclick="if(event.target===this)closeModal('modal-adversario')">
+  <div class="modal">
+    <div class="modal-header"><h3 class="modal-title">Adversário</h3><button class="modal-close" onclick="closeModal('modal-adversario')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="adv-id">
+      <div class="form-group"><label class="form-label">Nome *</label><input type="text" id="adv-nome" class="form-input"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label class="form-label">Faixa</label><select id="adv-faixa" class="form-input"><option value="branca">⬜ Branca</option><option value="azul">🟦 Azul</option><option value="roxa">🟣 Roxa</option><option value="marrom">🟫 Marrom</option><option value="preta">⬛ Preta</option></select></div>
+        <div class="form-group"><label class="form-label">Peso</label><select id="adv-peso" class="form-input"><option>Galo</option><option>Pluma</option><option>Pena</option><option selected>Leve</option><option>Médio</option><option>Meio-Pesado</option><option>Pesado</option><option>Super-Pesado</option><option>Pesadíssimo</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notas</label><textarea id="adv-notas" class="form-input" rows="2"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-adversario')">Cancelar</button><button class="btn btn-primary" onclick="salvarAdversario()">Salvar</button></div>
+  </div>
 </div>
+<!-- MODAL: Rola -->
 <div class="modal-overlay" id="modal-rola" onclick="if(event.target===this)closeModal('modal-rola')">
   <div class="modal">
     <div class="modal-header"><h3 class="modal-title">Registrar Rola</h3><button class="modal-close" onclick="closeModal('modal-rola')">×</button></div>
@@ -1279,45 +1081,11 @@ textarea.form-input{resize:vertical;min-height:70px}
 <!-- TOAST -->
 <div id="toast"></div>
 
+
+<!-- Modal: Backup -->
+
+
 <script>
-// ── Sidebar controls ──
-function openSidebar() {
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('overlay').classList.add('show');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-}
-function toggleCollapse() {
-  const sb = document.getElementById('sidebar');
-  const btn = document.getElementById('collapse-btn');
-  sb.classList.toggle('collapsed');
-  btn.textContent = sb.classList.contains('collapsed') ? '›' : '‹';
-}
-
-// ── Theme toggle ──
-function toggleTheme() {
-  const html = document.documentElement;
-  const current = html.getAttribute('data-theme');
-  const next = current === 'light' ? 'dark' : 'light';
-  html.setAttribute('data-theme', next === 'dark' ? '' : 'light');
-  localStorage.setItem('mt_theme', next);
-  document.getElementById('theme-icon').textContent = next === 'light' ? '🌙' : '☀️';
-  document.getElementById('theme-label').textContent = next === 'light' ? 'Tema escuro' : 'Tema claro';
-}
-(function(){
-  const saved = localStorage.getItem('mt_theme') || 'dark';
-  if (saved === 'light') {
-    document.documentElement.setAttribute('data-theme','light');
-    const icon = document.getElementById('theme-icon');
-    const label = document.getElementById('theme-label');
-    if(icon) icon.textContent='🌙';
-    if(label) label.textContent='Tema escuro';
-  }
-})();
-
-
 // ═══════════════════════════════════════════════════════
 // DATA STORE - localStorage persistence
 // ═══════════════════════════════════════════════════════
@@ -1517,21 +1285,14 @@ function setFiltro(f) {
 }
 
 function switchTab(tab) {
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll(`.nav-item[data-tab="${tab}"]`).forEach(b => b.classList.add('active'));
-  const panel = document.getElementById('panel-' + tab);
-  if (panel) panel.classList.add('active');
+  const idx = ['treinos','habitos','leitura','calendario','sparring'].indexOf(tab);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
   if (tab === 'calendario') renderCalendario();
   if (tab === 'habitos') renderHabitos();
   if (tab === 'sparring') renderSparring();
-  // Mobile: close sidebar
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-  // Update page title
-  const titles = {treinos:'Treinos',habitos:'Hábitos',leitura:'Leitura',calendario:'Calendário',sparring:'Sparring'};
-  const el = document.getElementById('page-title');
-  if (el) el.textContent = titles[tab] || '';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1615,53 +1376,32 @@ function renderStats() {
 function renderMetasAnuais() {
   const el = document.getElementById('metas-anuais-list');
   if (!el) return;
-  const ano = new Date().getFullYear();
-  const metas = (db.metasAnuais || []).filter(m => m.ano === ano);
-
-  if (!metas.length) {
-    el.innerHTML = '<div class="empty-state"><p>Nenhuma meta cadastrada</p></div>';
-    return;
-  }
-
-  const MODAL_LABEL = { jiu_jitsu:'Jiu-Jitsu', cardio:'Cardio', puxar_ferro:'Ferro', natacao:'Natação', futebol:'Futebol' };
-  const MODAL_EMOJI = { jiu_jitsu:'🥋', cardio:'🏃', puxar_ferro:'💪', natacao:'🏊', futebol:'⚽' };
-  const MODAL_COLOR = { jiu_jitsu:'#b347ff', cardio:'#4d8fff', puxar_ferro:'#ff7043', natacao:'#00e676', futebol:'#ffd600' };
+  const metas = db.metasAnuais || [];
+  if (!metas.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>Nenhuma meta cadastrada</p></div>'; return; }
 
   el.innerHTML = metas.map(m => {
-    const treinos = db.treinos.filter(t => t.pessoa === m.pessoa && t.modalidade === m.modalidade && normalizeDate(t.data).startsWith(ano+''));
-    const feitos = treinos.length;
-    const pct = Math.min(100, Math.round((feitos / m.metaAnual) * 100));
-    const faltam = Math.max(0, m.metaAnual - feitos);
+    const label = m.modalidade === 'jiu_jitsu' ? 'Jiu-Jitsu' : m.modalidade;
     const pessoa = m.pessoa === 'esdras' ? 'Esdras' : 'Alexandre';
-    const cor = MODAL_COLOR[m.modalidade] || 'var(--green)';
-    const emoji = MODAL_EMOJI[m.modalidade] || '🏆';
-    const label = MODAL_LABEL[m.modalidade] || m.modalidade;
-
+    const atual = db.treinos.filter(t => {
+      const d = normalizeDate(t.data);
+      return t.pessoa === m.pessoa && t.modalidade === m.modalidade && isThisYear(d);
+    }).length;
+    const pct = Math.min(100, Math.round((atual / m.metaAnual) * 100));
+    const faltam = Math.max(0, m.metaAnual - atual);
     return `
-    <div class="meta-row" style="border-left:3px solid ${cor}">
-      <div style="flex:1;min-width:0">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:20px">${emoji}</span>
-            <div>
-              <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:14px">${label} — ${pessoa}</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:1px">Meta ${ano}: ${m.metaAnual} treinos</div>
-            </div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:22px;color:${cor}">${feitos}<span style="font-size:13px;color:var(--text2);font-weight:400">/${m.metaAnual}</span></div>
-            <div style="font-size:11px;color:var(--text3)">${pct}% completo</div>
-          </div>
+    <div class="meta-card">
+      <div class="meta-header">
+        <div>
+          <div class="meta-title">🥋 Meta de ${label} — ${pessoa}</div>
+          <div class="meta-sub">Meta anual: ${m.metaAnual} treinos em 2026</div>
         </div>
-        <div style="background:var(--bg2);border-radius:99px;height:12px;overflow:hidden;margin-bottom:8px;border:1px solid var(--border)">
-          <div style="height:100%;border-radius:99px;width:${pct}%;background:${cor};transition:width 1.2s cubic-bezier(.4,0,.2,1);box-shadow:0 0 16px ${cor}60"></div>
-        </div>
-        <div style="font-size:12px;color:var(--text2)">
-          ${faltam > 0 
-            ? `Faltam <strong style="color:${cor}">${faltam} treinos</strong> para atingir a meta!`
-            : `<span style="color:var(--green)">🏆 Meta atingida! Parabéns!</span>`}
+        <div style="text-align:right">
+          <div class="meta-progress-big">${atual}/${m.metaAnual}</div>
+          <div class="meta-sub">${pct}% completo</div>
         </div>
       </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div style="margin-top:8px;font-size:13px;color:var(--text3)">Faltam <strong style="color:var(--green)">${faltam} treinos</strong> para atingir a meta!</div>
     </div>`;
   }).join('');
 }
@@ -1695,8 +1435,8 @@ function renderTreinoList() {
     <div class="treino-item">
       <span class="treino-badge ${BADGE_MAP[t.modalidade]}">${EMOJI_MAP[t.modalidade]} ${MODAL_MAP[t.modalidade]}</span>
       <div class="treino-info">
-        <div class="treino-date">${formatDate(t.data)}${t.pessoa === 'alexandre' ? ' <span style="color:var(--blue);font-size:10px;font-weight:700">Ale</span>' : ''}</div>
-        <div class="treino-details">${formatTipo(t.tipo)}</div>
+        <div class="treino-date">${formatDate(t.data)}${t.pessoa === 'alexandre' ? ' <span style="color:var(--blue);font-size:10px;font-weight:700">ALEX</span>' : ''}</div>
+        <div class="treino-details">${t.tipo || ''}</div>
       </div>
       <div class="treino-stats">
         <div class="treino-stat">
@@ -1737,7 +1477,7 @@ function renderTreinoList() {
     const paginacaoHTML = totalPaginas > 1 ? `
     <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0;flex-wrap:wrap">
       <button class="btn btn-ghost btn-sm" onclick="treinosPagina=Math.max(0,treinosPagina-1);renderTreinoList()" ${treinosPagina===0?'disabled style="opacity:.4"':''}>← Anterior</button>
-      <span style="font-size:13px;color:var(--text3);font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700">
+      <span style="font-size:13px;color:var(--text3);font-family:'Syne',sans-serif;font-weight:700">
         Página ${treinosPagina+1} de ${totalPaginas}
       </span>
       <button class="btn btn-ghost btn-sm" onclick="treinosPagina=Math.min(totalPaginas-1,treinosPagina+1);renderTreinoList()" ${treinosPagina===totalPaginas-1?'disabled style="opacity:.4"':''}>Próxima →</button>
@@ -2263,10 +2003,10 @@ function renderCombos(combosAtivos, ativHoje, temTreino) {
     ">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div>
-          <span style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:13px;color:${ativo ? 'var(--yellow)' : 'var(--text)'}">${combo.nome}</span>
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:${ativo ? 'var(--yellow)' : 'var(--text)'}">${combo.nome}</span>
           <div style="font-size:11px;color:var(--text3);margin-top:2px">${combo.desc}</div>
         </div>
-        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:16px;color:${ativo ? 'var(--yellow)' : 'var(--text3)'}">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:${ativo ? 'var(--yellow)' : 'var(--text3)'}">
           ${ativo ? '🏆 +'+combo.bonus : '+'+combo.bonus}
         </div>
       </div>
@@ -2314,7 +2054,7 @@ function onAtivChange() {
       return `
       <div style="margin-bottom:12px;padding:12px;background:var(--bg3);border-radius:var(--r-sm);border:1px solid var(--border)">
         <div style="font-size:12px;color:var(--text3);margin-bottom:4px">Água atual</div>
-        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:24px;font-weight:800;color:var(--blue)">${atual}L <span style="font-size:13px;color:var(--text3)">/ 3L</span></div>
+        <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--blue)">${atual}L <span style="font-size:13px;color:var(--text3)">/ 3L</span></div>
         <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:${Math.min(100,Math.round(atual/3*100))}%;background:var(--blue);box-shadow:0 0 6px rgba(77,143,255,.3)"></div></div>
       </div>
       <div class="form-group">
@@ -2431,7 +2171,7 @@ function calcSonoPreview() {
   h = Math.round(h * 10) / 10;
   const pts = h >= 7 ? 5 : h >= 6 ? 3 : 0;
   const cor = pts === 5 ? 'var(--green)' : pts === 3 ? 'var(--yellow)' : 'var(--red)';
-  prev.innerHTML = `<span style="color:${cor};font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:18px">${h}h de sono</span> <span style="color:var(--text3)">→ +${pts} pts</span>`;
+  prev.innerHTML = `<span style="color:${cor};font-family:'Syne',sans-serif;font-weight:800;font-size:18px">${h}h de sono</span> <span style="color:var(--text3)">→ +${pts} pts</span>`;
 }
 
 // Funções de água
@@ -2593,7 +2333,7 @@ function renderBossFight() {
         </div>
       </div>
       <div style="text-align:right">
-        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.8rem;font-weight:800;color:${derrotado ? 'var(--green)' : 'var(--red)'}">
+        <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:${derrotado ? 'var(--green)' : 'var(--red)'}">
           ${derrotado ? '🏆 VENCIDO!' : `${diasAcima}/${metaDias}`}
         </div>
         ${derrotado ? `<div style="font-size:11px;color:var(--green)">+${xpRecompensa} XP de recompensa!</div>` : `<div style="font-size:11px;color:var(--text3)">${hpRestante} dias restantes para vencer</div>`}
@@ -2775,11 +2515,6 @@ function resetLivroForm() {
 // CALENDÁRIO
 // ═══════════════════════════════════════════════════════
 
-
-function formatTipo(tipo) {
-  if (!tipo) return '';
-  return tipo.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-}
 function renderCalendario() {
   const year = calDate.getFullYear();
   const month = calDate.getMonth();
@@ -2819,7 +2554,7 @@ function renderCalendario() {
       return `<div class="cal-dot" style="background:${c}"></div>`;
     }).join('')}</div>` : '';
 
-    html += `<div class="${cls}" onclick="showDiaTreinos('${dateStr}')"><span class="cal-day-num">${day}</span>${dotsHtml}</div>`;
+    html += `<div class="${cls}" onclick="showDiaTreinos('${dateStr}')">${day}${dotsHtml}</div>`;
   }
 
   grid.innerHTML = html;
@@ -2844,7 +2579,7 @@ function showDiaTreinos(dateStr) {
   } else {
     content.innerHTML = treinos.map(t => `
     <div style="border-left:3px solid var(--green);padding:12px 16px;background:var(--card);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:10px">
-      <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:15px;margin-bottom:8px">${EMOJI_MAP[t.modalidade]} ${MODAL_MAP[t.modalidade]}${t.tipo ? ' — ' + formatTipo(t.tipo) : ''}</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px">${EMOJI_MAP[t.modalidade]} ${MODAL_MAP[t.modalidade]}${t.tipo?' — '+t.tipo:''}</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
         <div><div style="font-size:11px;color:var(--text3)">TEMPO</div><div style="font-weight:700">${t.tempo} min</div></div>
         <div><div style="font-size:11px;color:var(--text3)">CALORIAS</div><div style="font-weight:700">${t.calorias} kcal</div></div>
@@ -3014,7 +2749,7 @@ function mostrarResumoDiaAnterior(dateStr) {
     <!-- Pontuação grande -->
     <div style="text-align:center;padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px">
       <div style="font-size:3rem;margin-bottom:4px">${emoji}</div>
-      <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:3rem;font-weight:800;color:${cor};line-height:1">${total}</div>
+      <div style="font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:${cor};line-height:1">${total}</div>
       <div style="font-size:13px;color:var(--text3);margin-top:4px">pontos totais</div>
       <div style="font-size:14px;font-weight:700;color:${cor};margin-top:8px">${msg}</div>
     </div>
@@ -3047,7 +2782,7 @@ function mostrarResumoDiaAnterior(dateStr) {
     <!-- Streak info -->
     <div style="margin-top:14px;padding:10px 14px;background:var(--bg3);border-radius:var(--r-sm);display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:12px;color:var(--text3)">🔥 Streak atual</span>
-      <span style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:16px;color:${atingiuMeta ? 'var(--green)' : 'var(--red)'}">
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:${atingiuMeta ? 'var(--green)' : 'var(--red)'}">
         ${db.progressao.streakAtual} dias ${atingiuMeta ? '✅' : '❌'}
       </span>
     </div>
@@ -3083,6 +2818,10 @@ checkViradasDia();
 // Geofence check on load
 setTimeout(checkGeofence, 3000);
 
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+  // Could register SW for PWA capabilities
+}
 
 
 
@@ -3181,19 +2920,19 @@ function abrirBackup() {
     const ativDias = Object.keys(db.atividadesDiarias || {}).length;
     stats.innerHTML = `
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">${(db.treinos||[]).length}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">${(db.treinos||[]).length}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">Treinos</div>
       </div>
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue)">${(db.livros||[]).length}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue)">${(db.livros||[]).length}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">Livros</div>
       </div>
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--purple)">${ativDias}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--purple)">${ativDias}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">Dias c/ hábitos</div>
       </div>
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--yellow)">${db.progressao?.xpTotal || 0}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--yellow)">${db.progressao?.xpTotal || 0}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">XP Total</div>
       </div>
     `;
@@ -3203,7 +2942,14 @@ function abrirBackup() {
 // ═══════════════════════════════════════════════════════
 // TEMA CLARO / ESCURO
 // ═══════════════════════════════════════════════════════
-
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('mt_theme', next);
+  document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+}
 // Aplicar tema salvo
 (function() {
   const saved = localStorage.getItem('mt_theme') || 'dark';
@@ -3381,7 +3127,7 @@ window.addEventListener("load", () => GDRIVE.init());
 // SPARRING
 // ═══════════════════════════════════════════════════════
 
-const BELT_COLORS = { branca:'#e0e0e0', verde:'#00e676', azul:'#4d8fff', roxa:'#b347ff', marrom:'#a0522d', preta:'#222' };
+const BELT_COLORS = { branca:'#e0e0e0', azul:'#4d8fff', roxa:'#b347ff', marrom:'#a0522d', preta:'#111' };
 const FINALIZACOES = ['Armlock','Kimura','Americana','Triângulo','Omoplata','Guilhotina','D\'Arce','Rear Naked Choke','Leg Lock','Heel Hook','Katagatame','Brabo Choke','Outro'];
 
 var _sparringAdvAtivo = null;
@@ -3434,7 +3180,7 @@ function renderAdversarios() {
         <div class="belt-dot" style="background:${BELT_COLORS[adv.faixa] || '#888'}"></div>
         <div>
           <div class="adv-name">${adv.nome}</div>
-          <div class="adv-meta">${adv.faixa}${adv.grau ? " · "+adv.grau : ""}${adv.categoria ? " · "+adv.categoria : ""} · ${roles.length} rola${roles.length !== 1 ? 's' : ''} ${last3}</div>
+          <div class="adv-meta">${adv.faixa} · ${adv.peso} · ${roles.length} rola${roles.length !== 1 ? 's' : ''} ${last3}</div>
         </div>
         <div class="adv-winrate" style="color:${wrColor}">${wr !== null ? wr + '%' : '—'}</div>
       </div>
@@ -3475,12 +3221,8 @@ function renderDetalheAdv(advId) {
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:14px;height:14px;border-radius:50%;background:${BELT_COLORS[adv.faixa] || '#888'}"></div>
         <div>
-          <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:18px">${adv.nome}</div>
-          <div style="font-size:12px;color:var(--text3)">
-            ${adv.faixa}${adv.grau ? ' · ' + adv.grau : ''}
-            ${adv.categoria ? ' · ' + adv.categoria : ''}${adv.categoriaEtaria ? ' · ' + adv.categoriaEtaria : ''}
-            ${adv.idade ? ' · ' + adv.idade + ' anos' : ''}
-          </div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px">${adv.nome}</div>
+          <div style="font-size:12px;color:var(--text3)">${adv.faixa} · ${adv.peso}</div>
         </div>
       </div>
       <div style="display:flex;gap:8px">
@@ -3502,7 +3244,7 @@ function renderDetalheAdv(advId) {
 
   ${topPos.length ? `
   <div class="card" style="margin-bottom:14px">
-    <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📍 Posições Frequentes</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📍 Posições Frequentes</div>
     ${topPos.map(([pos, cnt]) => `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
       <div style="font-size:12px;color:var(--text2);min-width:120px">${pos}</div>
@@ -3515,7 +3257,7 @@ function renderDetalheAdv(advId) {
 
   ${topFin.length ? `
   <div class="card" style="margin-bottom:14px">
-    <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:13px;margin-bottom:8px">🔒 Finalizações</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px">🔒 Finalizações</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px">
       ${topFin.map(([tipo, cnt]) => `<span style="padding:4px 10px;border-radius:99px;background:var(--red-dim);color:var(--red);font-size:11px;font-weight:600">${tipo} ×${cnt}</span>`).join('')}
     </div>
@@ -3523,7 +3265,7 @@ function renderDetalheAdv(advId) {
 
   <!-- Lista de rolas -->
   <div>
-    <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📋 Histórico de Rolas</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📋 Histórico de Rolas</div>
     ${!roles.length ? '<div class="empty-state" style="padding:30px"><div class="empty-icon">🥋</div><p>Nenhuma rola ainda</p></div>' :
       roles.slice().reverse().map(rola => {
         const resMap = { won: {e:'🔥',c:'var(--green)',t:'Ganhou'}, draw: {e:'⚖️',c:'var(--yellow)',t:'Equil.'}, lost: {e:'💀',c:'var(--red)',t:'Perdeu'} };
@@ -3559,110 +3301,25 @@ function renderDetalheAdv(advId) {
 }
 
 // ── CRUD Adversário ──
-
-// ── Adversário: faixa e peso ──
-function onFaixaChange() {
-  const faixa = document.getElementById('adv-faixa').value;
-  const grauGroup = document.getElementById('grau-group');
-  if (grauGroup) grauGroup.style.display = faixa === 'branca' ? '' : 'none';
-}
-
-function calcCategoriaEtaria(idade) {
-  const n = parseInt(idade);
-  if (!n || isNaN(n)) return null;
-  if (n <= 17) return 'Infanto-Juvenil';
-  if (n <= 29) return 'Adulto';
-  if (n <= 35) return 'Master 1';
-  if (n <= 40) return 'Master 2';
-  if (n <= 45) return 'Master 3';
-  if (n <= 50) return 'Master 4';
-  return 'Master 5';
-}
-
-function calcCategoriaBJJ(pesoKg, genero) {
-  const kg = parseFloat(pesoKg);
-  if (!kg || isNaN(kg)) return null;
-  if (genero === 'f') {
-    if (kg <= 48.5) return 'Galo';
-    if (kg <= 53.5) return 'Pluma';
-    if (kg <= 58.5) return 'Pena';
-    if (kg <= 64) return 'Leve';
-    if (kg <= 69) return 'Médio';
-    if (kg <= 74) return 'Meio-Pesado';
-    if (kg <= 79.3) return 'Pesado';
-    if (kg <= 84.3) return 'Super-Pesado';
-    return 'Pesadíssimo';
-  } else {
-    if (kg <= 57.5) return 'Galo';
-    if (kg <= 64) return 'Pluma';
-    if (kg <= 70) return 'Pena';
-    if (kg <= 76) return 'Leve';
-    if (kg <= 82.3) return 'Médio';
-    if (kg <= 88.3) return 'Meio-Pesado';
-    if (kg <= 94.3) return 'Pesado';
-    if (kg <= 100.5) return 'Super-Pesado';
-    return 'Pesadíssimo';
-  }
-}
-
-function onIdadeChange() {
-  const idade = document.getElementById('adv-idade')?.value;
-  const el = document.getElementById('adv-cat-etaria');
-  if (!el) return;
-  const cat = calcCategoriaEtaria(idade);
-  el.textContent = cat || '— calculado pela idade —';
-  el.style.color = cat ? 'var(--text)' : 'var(--text3)';
-}
-
-function onPesoChange() {
-  const kg = document.getElementById('adv-peso-kg')?.value;
-  const genero = document.getElementById('adv-genero')?.value || 'm';
-  const el = document.getElementById('adv-categoria');
-  if (!el) return;
-  const cat = calcCategoriaBJJ(kg, genero);
-  el.textContent = cat ? cat : '— calculado pelo peso —';
-  el.style.color = cat ? 'var(--text)' : 'var(--text3)';
-}
-
 function openModal_Adversario(adv) {
   document.getElementById('adv-id').value = adv ? adv.id : '';
   document.getElementById('adv-nome').value = adv ? adv.nome : '';
-  document.getElementById('adv-faixa').value = adv ? (adv.faixa || 'branca') : 'branca';
-  document.getElementById('adv-grau').value = adv ? (adv.grau || '') : '';
-  document.getElementById('adv-peso-kg').value = adv ? (adv.pesoKg || '') : '';
-  document.getElementById('adv-idade').value = adv ? (adv.idade || '') : '';
-  document.getElementById('adv-genero').value = adv ? (adv.genero || 'm') : 'm';
+  document.getElementById('adv-faixa').value = adv ? adv.faixa : 'branca';
+  document.getElementById('adv-peso').value = adv ? adv.peso : 'Leve';
   document.getElementById('adv-notas').value = adv ? (adv.notas || '') : '';
-  onFaixaChange();
-  onPesoChange();
-  onIdadeChange();
-  document.getElementById('modal-adversario').classList.add('open');
+  document.getElementById('modal-adversario').classList.add('active');
 }
 
 function salvarAdversario() {
   const nome = document.getElementById('adv-nome').value.trim();
-  if (!nome) { showToast('Preencha o nome!'); return; }
-  const faixa = document.getElementById('adv-faixa').value;
-  if (!faixa) { showToast('Selecione a faixa!'); return; }
-  const pesoKg = document.getElementById('adv-peso-kg').value;
-  const genero = document.getElementById('adv-genero').value || 'm';
-  const dados = {
-    nome, faixa,
-    grau: faixa === 'branca' ? document.getElementById('adv-grau').value : '',
-    pesoKg: pesoKg ? parseFloat(pesoKg) : null,
-    categoria: calcCategoriaBJJ(pesoKg, genero) || '',
-    categoriaEtaria: calcCategoriaEtaria(document.getElementById('adv-idade').value) || '',
-    genero,
-    idade: document.getElementById('adv-idade').value ? parseInt(document.getElementById('adv-idade').value) : null,
-    notas: document.getElementById('adv-notas').value.trim(),
-  };
+  if (!nome) { showToast('Preencha o nome!', 'error'); return; }
   if (!db.sparring) db.sparring = [];
   const id = document.getElementById('adv-id').value;
   if (id) {
     const a = db.sparring.find(x => x.id === id);
-    if (a) Object.assign(a, dados);
+    if (a) { a.nome = nome; a.faixa = document.getElementById('adv-faixa').value; a.peso = document.getElementById('adv-peso').value; a.notas = document.getElementById('adv-notas').value; }
   } else {
-    db.sparring.push({ id: 'adv_' + Date.now(), ...dados, roles: [] });
+    db.sparring.push({ id: 'adv_' + Date.now(), nome, faixa: document.getElementById('adv-faixa').value, peso: document.getElementById('adv-peso').value, notas: document.getElementById('adv-notas').value, roles: [] });
   }
   saveDB(); closeModal('modal-adversario'); renderSparring(); showToast('Adversário salvo!');
 }
@@ -3695,7 +3352,7 @@ function novaRola(advId) {
   document.getElementById('rola-nota').value = '';
   selectResultado('draw');
   renderFinalizacoes();
-  document.getElementById('modal-rola').classList.add('open');
+  document.getElementById('modal-rola').classList.add('active');
 }
 
 function editarRola(advId, rolaId) {
@@ -3718,7 +3375,7 @@ function editarRola(advId, rolaId) {
   document.getElementById('rola-nota').value = rola.nota || '';
   selectResultado(rola.resultado || 'draw');
   renderFinalizacoes();
-  document.getElementById('modal-rola').classList.add('open');
+  document.getElementById('modal-rola').classList.add('active');
 }
 
 function salvarRola() {
@@ -3787,15 +3444,16 @@ function renderFinalizacoes() {
 }
 
   // Service Worker (PWA)
-
-
-
-// PWA
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/mind-tracker/sw.js', {scope: '/mind-tracker/'})
-    .then(() => console.log('%c⚡ PWA ativo', 'color:#00e676;font-weight:bold'))
-    .catch(e => console.warn('SW falhou (normal em dev):', e.message));
-}
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('%c⚡ PWA Service Worker ativo', 'color:#00e676'))
+        .catch(e => console.warn('SW error:', e));
+    });
+  }
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
