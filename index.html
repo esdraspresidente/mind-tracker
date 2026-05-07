@@ -16,7 +16,19 @@
   <meta name="mobile-web-app-capable" content="yes">
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Fallback enquanto fontes carregam */
+    @font-face {
+      font-family: 'Syne';
+      font-style: normal;
+      font-weight: 700 800;
+      font-display: swap;
+      src: local('Syne Bold');
+    }
+  </style>
 
   <!-- Google Drive + Identity -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -68,7 +80,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;overflow:hidden}
 body{
-  font-family:'DM Sans',sans-serif;
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:var(--bg);color:var(--text);
   height:100%;overflow:hidden;
   -webkit-font-smoothing:antialiased;
@@ -123,7 +135,7 @@ body{
   font-size:18px;box-shadow:0 0 20px var(--green-glow);
 }
 .sb-logo-text{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:15px;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:15px;
   white-space:nowrap;overflow:hidden;
   transition:opacity .2s,width .25s;
 }
@@ -146,7 +158,7 @@ body{
   border-radius:7px;border:none;
   background:transparent;color:var(--text2);
   font-size:11px;font-weight:700;cursor:pointer;
-  font-family:'Syne',sans-serif;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
   transition:var(--t);white-space:nowrap;
   display:flex;align-items:center;justify-content:center;
 }
@@ -183,7 +195,7 @@ body{
   display:flex;align-items:center;justify-content:center;
 }
 .nav-label{
-  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:13px;font-weight:700;
   transition:opacity .2s;
   flex:1;
 }
@@ -202,7 +214,7 @@ body{
   position:absolute;left:calc(var(--sidebar-w-collapsed) + 8px);
   background:var(--surface2);color:var(--text);
   padding:6px 12px;border-radius:8px;
-  font-size:12px;font-weight:700;font-family:'Syne',sans-serif;
+  font-size:12px;font-weight:700;font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
   white-space:nowrap;z-index:200;
   border:1px solid var(--border2);
   box-shadow:var(--shadow);
@@ -220,7 +232,7 @@ body{
   padding:9px 10px;border-radius:var(--r-sm);
   cursor:pointer;transition:var(--t);
   border:none;background:transparent;color:var(--text2);
-  font-family:'Syne',sans-serif;font-size:12px;font-weight:600;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:12px;font-weight:600;
   white-space:nowrap;min-height:38px;width:100%;
 }
 .sb-footer-btn:hover{background:var(--surface2);color:var(--text)}
@@ -264,7 +276,7 @@ body{
   flex-shrink:0;
 }
 #page-title{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:18px;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:18px;
   flex:1;
 }
 .topbar-actions{
@@ -275,7 +287,7 @@ body{
   border:1px solid var(--border);background:var(--surface);
   color:var(--text2);cursor:pointer;
   display:flex;align-items:center;gap:6px;
-  font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;
+  font-size:12px;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-weight:500;
   transition:var(--t);flex-shrink:0;white-space:nowrap;
 }
 .topbar-btn:hover{border-color:var(--border2);color:var(--text)}
@@ -289,7 +301,7 @@ body{
 .user-avatar{
   width:34px;height:34px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-weight:800;font-size:12px;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:12px;
   color:#000;flex-shrink:0;cursor:pointer;
   transition:var(--t);
 }
@@ -330,7 +342,7 @@ body{
 .stat-card{
   background:var(--surface);border:1px solid var(--border);
   border-radius:var(--r);padding:16px 18px;
-  transition:var(--t);
+  transition:var(--t);overflow:hidden;
 }
 .stat-card:hover{border-color:var(--border2)}
 .stat-card.green{border-left:3px solid var(--green)}
@@ -339,7 +351,7 @@ body{
 .stat-card.orange{border-left:3px solid var(--orange)}
 .stat-card.red{border-left:3px solid var(--red)}
 .stat-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
-.stat-value{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1}
+.stat-value{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:clamp(1.4rem,5vw,2.2rem);line-height:1}
 .stat-value .unit{font-size:.5em;font-weight:400;color:var(--text2);margin-left:2px}
 
 /* Section header */
@@ -348,7 +360,7 @@ body{
   margin-bottom:18px;gap:12px;flex-wrap:wrap;
 }
 .section-title{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:17px;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:17px;
 }
 
 /* Buttons */
@@ -356,7 +368,7 @@ body{
   display:inline-flex;align-items:center;gap:6px;
   padding:9px 18px;border-radius:var(--r-sm);
   font-size:13px;font-weight:700;cursor:pointer;
-  font-family:'DM Sans',sans-serif;
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   border:1px solid transparent;transition:var(--t);
   white-space:nowrap;
 }
@@ -400,7 +412,7 @@ body{
 .form-input{
   width:100%;padding:10px 12px;border-radius:var(--r-sm);
   border:1px solid var(--border);background:var(--bg2);
-  color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;
+  color:var(--text);font-size:13px;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   transition:var(--t);outline:none;
 }
 .form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
@@ -426,7 +438,7 @@ textarea.form-input{resize:vertical;min-height:70px}
 }
 .modal-overlay.open .modal{transform:scale(1) translateY(0)}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px}
+.modal-title{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:16px}
 .modal-close{
   width:28px;height:28px;border-radius:50%;
   border:1px solid var(--border);background:transparent;
@@ -519,12 +531,12 @@ textarea.form-input{resize:vertical;min-height:70px}
 .adv-card:hover,.adv-card.active{border-color:var(--purple);background:var(--surface2)}
 .adv-card-top{display:flex;align-items:center;gap:10px}
 .belt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.adv-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
+.adv-name{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:14px}
 .adv-meta{font-size:11px;color:var(--text3);margin-top:2px}
-.adv-winrate{margin-left:auto;font-family:'Syne',sans-serif;font-weight:800;font-size:15px}
+.adv-winrate{margin-left:auto;font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:15px}
 .rola-item{padding:12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);margin-bottom:8px;transition:var(--t)}
 .rola-item:hover{border-color:var(--border2)}
-.resultado-btn{padding:8px 4px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:var(--t)}
+.resultado-btn{padding:8px 4px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;font-size:12px;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;transition:var(--t)}
 .resultado-btn.active{border-color:var(--green);color:var(--green);background:var(--green-dim)}
 .resultado-btn[data-val="lost"].active{border-color:var(--red);color:var(--red);background:var(--red-dim)}
 .resultado-btn[data-val="draw"].active{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim)}
@@ -547,7 +559,7 @@ textarea.form-input{resize:vertical;min-height:70px}
 .xp-item.blue{border-color:var(--blue-dim);background:var(--blue-dim)}
 .xp-item.orange{border-color:#ff704318;background:#ff704318}
 .xp-item-val{
-  font-family:'Syne',sans-serif;font-weight:800;
+  font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;
   font-size:clamp(1rem,3vw,1.4rem);line-height:1;margin-bottom:4px;
 }
 .xp-item.purple .xp-item-val{color:var(--purple)}
@@ -611,7 +623,7 @@ textarea.form-input{resize:vertical;min-height:70px}
   background:linear-gradient(135deg,#fc4c0220,#fc4c0210);
   border:1px solid #fc4c0230;margin-bottom:20px;gap:12px;flex-wrap:wrap;
 }
-.strava-banner h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fc6a2a}
+.strava-banner h4{font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:14px;font-weight:800;color:#fc6a2a}
 .strava-banner p{font-size:12px;color:var(--text2);margin-top:2px}
 
 /* Chart bars */
@@ -879,7 +891,7 @@ textarea.form-input{resize:vertical;min-height:70px}
     <div class="section-header">
       <div class="section-title"><span class="icon">✅</span>Atividades do Dia</div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <span id="pontos-dia-badge" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--yellow);"></span>
+        <span id="pontos-dia-badge" style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:14px;font-weight:800;color:var(--yellow);"></span>
         <button class="btn btn-secondary btn-sm" onclick="openModal('modal-atividade')">+ Registrar</button>
       </div>
     </div>
@@ -1632,12 +1644,12 @@ function renderMetasAnuais() {
           <div style="display:flex;align-items:center;gap:8px">
             <span style="font-size:20px">${emoji}</span>
             <div>
-              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px">${label} — ${pessoa}</div>
+              <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:14px">${label} — ${pessoa}</div>
               <div style="font-size:11px;color:var(--text3);margin-top:1px">Meta ${ano}: ${m.metaAnual} treinos</div>
             </div>
           </div>
           <div style="text-align:right">
-            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:${cor}">${feitos}<span style="font-size:13px;color:var(--text2);font-weight:400">/${m.metaAnual}</span></div>
+            <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:22px;color:${cor}">${feitos}<span style="font-size:13px;color:var(--text2);font-weight:400">/${m.metaAnual}</span></div>
             <div style="font-size:11px;color:var(--text3)">${pct}% completo</div>
           </div>
         </div>
@@ -1725,7 +1737,7 @@ function renderTreinoList() {
     const paginacaoHTML = totalPaginas > 1 ? `
     <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0;flex-wrap:wrap">
       <button class="btn btn-ghost btn-sm" onclick="treinosPagina=Math.max(0,treinosPagina-1);renderTreinoList()" ${treinosPagina===0?'disabled style="opacity:.4"':''}>← Anterior</button>
-      <span style="font-size:13px;color:var(--text3);font-family:'Syne',sans-serif;font-weight:700">
+      <span style="font-size:13px;color:var(--text3);font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700">
         Página ${treinosPagina+1} de ${totalPaginas}
       </span>
       <button class="btn btn-ghost btn-sm" onclick="treinosPagina=Math.min(totalPaginas-1,treinosPagina+1);renderTreinoList()" ${treinosPagina===totalPaginas-1?'disabled style="opacity:.4"':''}>Próxima →</button>
@@ -2251,10 +2263,10 @@ function renderCombos(combosAtivos, ativHoje, temTreino) {
     ">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div>
-          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:${ativo ? 'var(--yellow)' : 'var(--text)'}">${combo.nome}</span>
+          <span style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:13px;color:${ativo ? 'var(--yellow)' : 'var(--text)'}">${combo.nome}</span>
           <div style="font-size:11px;color:var(--text3);margin-top:2px">${combo.desc}</div>
         </div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:${ativo ? 'var(--yellow)' : 'var(--text3)'}">
+        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:16px;color:${ativo ? 'var(--yellow)' : 'var(--text3)'}">
           ${ativo ? '🏆 +'+combo.bonus : '+'+combo.bonus}
         </div>
       </div>
@@ -2302,7 +2314,7 @@ function onAtivChange() {
       return `
       <div style="margin-bottom:12px;padding:12px;background:var(--bg3);border-radius:var(--r-sm);border:1px solid var(--border)">
         <div style="font-size:12px;color:var(--text3);margin-bottom:4px">Água atual</div>
-        <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--blue)">${atual}L <span style="font-size:13px;color:var(--text3)">/ 3L</span></div>
+        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:24px;font-weight:800;color:var(--blue)">${atual}L <span style="font-size:13px;color:var(--text3)">/ 3L</span></div>
         <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:${Math.min(100,Math.round(atual/3*100))}%;background:var(--blue);box-shadow:0 0 6px rgba(77,143,255,.3)"></div></div>
       </div>
       <div class="form-group">
@@ -2419,7 +2431,7 @@ function calcSonoPreview() {
   h = Math.round(h * 10) / 10;
   const pts = h >= 7 ? 5 : h >= 6 ? 3 : 0;
   const cor = pts === 5 ? 'var(--green)' : pts === 3 ? 'var(--yellow)' : 'var(--red)';
-  prev.innerHTML = `<span style="color:${cor};font-family:'Syne',sans-serif;font-weight:800;font-size:18px">${h}h de sono</span> <span style="color:var(--text3)">→ +${pts} pts</span>`;
+  prev.innerHTML = `<span style="color:${cor};font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:18px">${h}h de sono</span> <span style="color:var(--text3)">→ +${pts} pts</span>`;
 }
 
 // Funções de água
@@ -2581,7 +2593,7 @@ function renderBossFight() {
         </div>
       </div>
       <div style="text-align:right">
-        <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:${derrotado ? 'var(--green)' : 'var(--red)'}">
+        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.8rem;font-weight:800;color:${derrotado ? 'var(--green)' : 'var(--red)'}">
           ${derrotado ? '🏆 VENCIDO!' : `${diasAcima}/${metaDias}`}
         </div>
         ${derrotado ? `<div style="font-size:11px;color:var(--green)">+${xpRecompensa} XP de recompensa!</div>` : `<div style="font-size:11px;color:var(--text3)">${hpRestante} dias restantes para vencer</div>`}
@@ -2832,7 +2844,7 @@ function showDiaTreinos(dateStr) {
   } else {
     content.innerHTML = treinos.map(t => `
     <div style="border-left:3px solid var(--green);padding:12px 16px;background:var(--card);border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:10px">
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px">${EMOJI_MAP[t.modalidade]} ${MODAL_MAP[t.modalidade]}${t.tipo ? ' — ' + formatTipo(t.tipo) : ''}</div>
+      <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:15px;margin-bottom:8px">${EMOJI_MAP[t.modalidade]} ${MODAL_MAP[t.modalidade]}${t.tipo ? ' — ' + formatTipo(t.tipo) : ''}</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
         <div><div style="font-size:11px;color:var(--text3)">TEMPO</div><div style="font-weight:700">${t.tempo} min</div></div>
         <div><div style="font-size:11px;color:var(--text3)">CALORIAS</div><div style="font-weight:700">${t.calorias} kcal</div></div>
@@ -3002,7 +3014,7 @@ function mostrarResumoDiaAnterior(dateStr) {
     <!-- Pontuação grande -->
     <div style="text-align:center;padding:20px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px">
       <div style="font-size:3rem;margin-bottom:4px">${emoji}</div>
-      <div style="font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:${cor};line-height:1">${total}</div>
+      <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:3rem;font-weight:800;color:${cor};line-height:1">${total}</div>
       <div style="font-size:13px;color:var(--text3);margin-top:4px">pontos totais</div>
       <div style="font-size:14px;font-weight:700;color:${cor};margin-top:8px">${msg}</div>
     </div>
@@ -3035,7 +3047,7 @@ function mostrarResumoDiaAnterior(dateStr) {
     <!-- Streak info -->
     <div style="margin-top:14px;padding:10px 14px;background:var(--bg3);border-radius:var(--r-sm);display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:12px;color:var(--text3)">🔥 Streak atual</span>
-      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:${atingiuMeta ? 'var(--green)' : 'var(--red)'}">
+      <span style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:16px;color:${atingiuMeta ? 'var(--green)' : 'var(--red)'}">
         ${db.progressao.streakAtual} dias ${atingiuMeta ? '✅' : '❌'}
       </span>
     </div>
@@ -3169,19 +3181,19 @@ function abrirBackup() {
     const ativDias = Object.keys(db.atividadesDiarias || {}).length;
     stats.innerHTML = `
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">${(db.treinos||[]).length}</div>
+        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">${(db.treinos||[]).length}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">Treinos</div>
       </div>
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue)">${(db.livros||[]).length}</div>
+        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--blue)">${(db.livros||[]).length}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">Livros</div>
       </div>
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--purple)">${ativDias}</div>
+        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--purple)">${ativDias}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">Dias c/ hábitos</div>
       </div>
       <div style="text-align:center;padding:10px;background:var(--card);border-radius:var(--r-sm);border:1px solid var(--border)">
-        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--yellow)">${db.progressao?.xpTotal || 0}</div>
+        <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1.4rem;font-weight:800;color:var(--yellow)">${db.progressao?.xpTotal || 0}</div>
         <div style="font-size:10px;color:var(--text3);margin-top:2px">XP Total</div>
       </div>
     `;
@@ -3463,7 +3475,7 @@ function renderDetalheAdv(advId) {
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:14px;height:14px;border-radius:50%;background:${BELT_COLORS[adv.faixa] || '#888'}"></div>
         <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px">${adv.nome}</div>
+          <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:800;font-size:18px">${adv.nome}</div>
           <div style="font-size:12px;color:var(--text3)">
             ${adv.faixa}${adv.grau ? ' · ' + adv.grau : ''}
             ${adv.categoria ? ' · ' + adv.categoria : ''}${adv.categoriaEtaria ? ' · ' + adv.categoriaEtaria : ''}
@@ -3490,7 +3502,7 @@ function renderDetalheAdv(advId) {
 
   ${topPos.length ? `
   <div class="card" style="margin-bottom:14px">
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📍 Posições Frequentes</div>
+    <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📍 Posições Frequentes</div>
     ${topPos.map(([pos, cnt]) => `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
       <div style="font-size:12px;color:var(--text2);min-width:120px">${pos}</div>
@@ -3503,7 +3515,7 @@ function renderDetalheAdv(advId) {
 
   ${topFin.length ? `
   <div class="card" style="margin-bottom:14px">
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px">🔒 Finalizações</div>
+    <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:13px;margin-bottom:8px">🔒 Finalizações</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px">
       ${topFin.map(([tipo, cnt]) => `<span style="padding:4px 10px;border-radius:99px;background:var(--red-dim);color:var(--red);font-size:11px;font-weight:600">${tipo} ×${cnt}</span>`).join('')}
     </div>
@@ -3511,7 +3523,7 @@ function renderDetalheAdv(advId) {
 
   <!-- Lista de rolas -->
   <div>
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📋 Histórico de Rolas</div>
+    <div style="font-family:'Syne','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-weight:700;font-size:13px;margin-bottom:10px">📋 Histórico de Rolas</div>
     ${!roles.length ? '<div class="empty-state" style="padding:30px"><div class="empty-icon">🥋</div><p>Nenhuma rola ainda</p></div>' :
       roles.slice().reverse().map(rola => {
         const resMap = { won: {e:'🔥',c:'var(--green)',t:'Ganhou'}, draw: {e:'⚖️',c:'var(--yellow)',t:'Equil.'}, lost: {e:'💀',c:'var(--red)',t:'Perdeu'} };
