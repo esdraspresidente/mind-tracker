@@ -573,6 +573,15 @@ h1,h2,h3,h4,h5{font-family:'Syne',sans-serif;line-height:1.2}
 </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://apis.google.com/js/api.js" async defer></script>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mind Tracker">
+  <meta name="theme-color" content="#00e676">
+  <meta name="mobile-web-app-capable" content="yes">
 </head>
 <body>
 
@@ -3433,6 +3442,15 @@ function renderFinalizacoes() {
       <button onclick="_finalizacoes.splice(${i},1);renderFinalizacoes()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--red-dim);background:transparent;color:var(--red);cursor:pointer">×</button>
     </div>`).join('');
 }
+
+  // Service Worker (PWA)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('%c⚡ PWA Service Worker ativo', 'color:#00e676'))
+        .catch(e => console.warn('SW error:', e));
+    });
+  }
 </script>
 </body>
 </html>
