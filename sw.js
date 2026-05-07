@@ -1,15 +1,19 @@
-const CACHE_NAME = 'mind-tracker-v1';
+const CACHE_NAME = 'mind-tracker-v2';
 const ASSETS = [
   '/mind-tracker/',
   '/mind-tracker/index.html',
   '/mind-tracker/manifest.json',
   '/mind-tracker/icon-192.png',
   '/mind-tracker/icon-512.png',
+  '/mind-tracker/apple-touch-icon.png',
+  '/mind-tracker/favicon.png',
 ];
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(ASSETS))
+      .catch(() => {}) // não falha se algum asset não existir
   );
   self.skipWaiting();
 });
@@ -24,7 +28,8 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Sempre busca online primeiro, cai no cache se offline
+  // Só intercepta requests do mesmo origin
+  if (!e.request.url.startsWith(self.location.origin)) return;
   e.respondWith(
     fetch(e.request)
       .then(res => {

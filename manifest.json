@@ -1,14 +1,24 @@
 {
   "name": "Mind Tracker 2026",
   "short_name": "Mind Tracker",
-  "description": "Tracker de treinos, hábitos e leitura",
+  "description": "Tracker de treinos, hábitos, leitura e sparring",
   "start_url": "/mind-tracker/",
   "scope": "/mind-tracker/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0a0a0f",
-  "theme_color": "#00e676",
+  "orientation": "portrait-primary",
+  "background_color": "#0d0d14",
+  "theme_color": "#0d0d14",
+  "categories": [
+    "health",
+    "fitness",
+    "lifestyle"
+  ],
   "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
     {
       "src": "icon-192.png",
       "sizes": "192x192",
