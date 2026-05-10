@@ -3454,19 +3454,44 @@ const GDRIVE = {
     this.setStatus('syncing');
     await this.findOrCreateFile();
     const driveData = await this.loadData();
+    const localData = db;
+
     if (driveData) {
-      // Drive tem dados — usa como fonte da verdade
-      db = driveData;
+      // Merge inteligente: combina Drive + local sem perder dados
+      const merged = { ...driveData };
+
+      // Treinos: pega todos únicos de ambos
+      const treinosMap = {};
+      [...(driveData.treinos || []), ...(localData.treinos || [])].forEach(t => {
+        treinosMap[t.id] = t;
+      });
+      merged.treinos = Object.values(treinosMap);
+
+      // Atividades diárias: merge por data (local tem prioridade se mais recente)
+      merged.atividadesDiarias = { ...(driveData.atividadesDiarias || {}), ...(localData.atividadesDiarias || {}) };
+
+      // Progressao: pega o maior XP entre os dois
+      if (localData.progressao && localData.progressao.xpTotal > (driveData.progressao?.xpTotal || 0)) {
+        merged.progressao = localData.progressao;
+      }
+
+      // Livros e sparring: pega local se tiver mais itens
+      if ((localData.livros || []).length > (driveData.livros || []).length) {
+        merged.livros = localData.livros;
+      }
+      if ((localData.sparring || []).length > (driveData.sparring || []).length) {
+        merged.sparring = localData.sparring;
+      }
+
+      db = merged;
       localStorage.setItem(DB_KEY, JSON.stringify(db));
+      await this.saveData(db); // Sobe o merge de volta pro Drive
       renderAll();
       showToast('✅ Dados sincronizados do Drive!');
     } else {
       // Drive vazio — sobe dados locais
-      const hasLocal = localStorage.getItem(DB_KEY);
-      if (hasLocal) {
-        await this.saveData(db);
-        showToast('☁️ Dados locais enviados ao Drive!');
-      }
+      await this.saveData(db);
+      showToast('☁️ Dados locais enviados ao Drive!');
     }
     this.setStatus('connected');
   },
