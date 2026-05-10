@@ -3528,6 +3528,9 @@ const GDRIVE = {
       showToast('☁️ Dados locais enviados ao Drive!');
     }
     this.setStatus('connected');
+    // Iniciar sync automático a cada 30 segundos
+    if (this._syncInterval) clearInterval(this._syncInterval);
+    this._syncInterval = setInterval(() => this.autoSync(), 30000);
   },
 
   async findOrCreateFile() {
@@ -3579,7 +3582,7 @@ const GDRIVE = {
         this.setStatus('error');
         console.error('Drive save error:', e);
       }
-    }, 1500);
+    }, 500);
   },
 
   setStatus(status) {
@@ -3596,6 +3599,48 @@ const GDRIVE = {
     const s = map[status] || map.disconnected;
     if (s.cls) btn.classList.add(s.cls);
     label.textContent = s.text;
+  },
+
+  // Sync automático — puxa dados do Drive a cada 30 segundos
+  async autoSync() {
+    if (!this.fileId || !gapi.client.getToken()) return;
+    try {
+      const driveData = await this.loadData();
+      if (!driveData) return;
+
+      // Merge com dados locais
+      const localData = db;
+      const merged = { ...driveData };
+
+      const treinosMap = {};
+      [...(driveData.treinos || []), ...(localData.treinos || [])].forEach(t => {
+        treinosMap[t.id] = t;
+      });
+      merged.treinos = Object.values(treinosMap);
+      merged.atividadesDiarias = { ...(driveData.atividadesDiarias || {}), ...(localData.atividadesDiarias || {}) };
+
+      if ((localData.progressao?.xpTotal || 0) > (driveData.progressao?.xpTotal || 0)) {
+        merged.progressao = localData.progressao;
+      }
+      if ((localData.livros || []).length > (driveData.livros || []).length) {
+        merged.livros = localData.livros;
+      }
+      if ((localData.sparring || []).length > (driveData.sparring || []).length) {
+        merged.sparring = localData.sparring;
+      }
+
+      // Só atualiza se tiver diferença real
+      const localJSON = JSON.stringify(db);
+      const mergedJSON = JSON.stringify(merged);
+      if (localJSON !== mergedJSON) {
+        db = merged;
+        localStorage.setItem('mindtracker2026', mergedJSON);
+        renderAll();
+        console.log('%c🔄 Sync automático — dados atualizados!', 'color:#00e676');
+      }
+    } catch(e) {
+      console.warn('AutoSync falhou:', e);
+    }
   },
 };
 
