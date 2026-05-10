@@ -3603,10 +3603,26 @@ const GDRIVE = {
 
   // Sync automático — puxa dados do Drive a cada 30 segundos
   async autoSync() {
-    if (!this.fileId || !gapi.client.getToken()) return;
+    const token = gapi.client.getToken();
+    if (!this.fileId || !token) {
+      console.log('%c⚠️ AutoSync ignorado — sem fileId ou token', 'color:#ffd600');
+      // Tentar reconectar com token salvo
+      const saved = localStorage.getItem('gdrive_token');
+      if (saved) {
+        try {
+          gapi.client.setToken(JSON.parse(saved));
+          await this.findOrCreateFile();
+        } catch(e) {}
+      }
+      return;
+    }
     try {
       const driveData = await this.loadData();
-      if (!driveData) return;
+      if (!driveData) {
+        console.log('%c⚠️ AutoSync — Drive sem dados', 'color:#ffd600');
+        return;
+      }
+      console.log('%c🔄 AutoSync — verificando...', 'color:#4d8fff');
 
       // Merge com dados locais
       const localData = db;
