@@ -1062,9 +1062,16 @@ textarea.form-input{resize:vertical;min-height:70px}
     ⏱️ <span id="tempo-fixo-texto">Duração fixada em 60 min</span>
   </div>
   <div class="form-group">
-    <div class="toggle-wrap">
-      <div class="toggle" id="t-comAlex-toggle" onclick="toggleComAlex()"></div>
-      <span class="toggle-label">Treinou com Alexandre?</span>
+    <label class="form-label">Treinou com Alexandre?</label>
+    <div style="display:flex;gap:8px">
+      <button type="button" id="btn-alex-sim" onclick="setComAlex(true)"
+        style="flex:1;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;transition:var(--t)">
+        ✅ Sim
+      </button>
+      <button type="button" id="btn-alex-nao" onclick="setComAlex(false)"
+        style="flex:1;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--green);background:var(--green-dim);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;transition:var(--t)">
+        ❌ Não
+      </button>
     </div>
   </div>
   <input type="hidden" id="t-id" value="">
@@ -1890,9 +1897,22 @@ function onModalidadeChange() {
   }
 }
 
+function setComAlex(val) {
+  comAlex = val;
+  const btnSim = document.getElementById('btn-alex-sim');
+  const btnNao = document.getElementById('btn-alex-nao');
+  if (!btnSim || !btnNao) return;
+  if (comAlex) {
+    btnSim.style.cssText = 'flex:1;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--green);background:var(--green-dim);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;transition:var(--t)';
+    btnNao.style.cssText = 'flex:1;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;transition:var(--t)';
+  } else {
+    btnSim.style.cssText = 'flex:1;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;transition:var(--t)';
+    btnNao.style.cssText = 'flex:1;padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--green);background:var(--green-dim);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;transition:var(--t)';
+  }
+}
+
 function toggleComAlex() {
-  comAlex = !comAlex;
-  document.getElementById('t-comAlex-toggle').classList.toggle('on', comAlex);
+  setComAlex(!comAlex);
 }
 
 function salvarTreino() {
@@ -1954,7 +1974,7 @@ function resetTreinoForm() {
   document.getElementById('t-tempo').value = '';
   document.getElementById('t-km').value = '';
   comAlex = false;
-  document.getElementById('t-comAlex-toggle').classList.remove('on');
+  setComAlex(false);
   onModalidadeChange();
 }
 
@@ -1974,7 +1994,7 @@ function editarTreino(id) {
   }
   document.getElementById('t-km').value = t.km || '';
   comAlex = t.treinouComAlexandre || false;
-  document.getElementById('t-comAlex-toggle').classList.toggle('on', comAlex);
+  setComAlex(comAlex);
   openModal('modal-treino');
 }
 
