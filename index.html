@@ -1182,7 +1182,7 @@ textarea.form-input{resize:vertical;min-height:70px}
   </div>
   <div id="modal-dia-content"></div>
   <div class="form-actions" style="margin-top:16px">
-    <button class="btn btn-primary btn-sm" onclick="closeModal('modal-dia');openModal('modal-treino')">+ Adicionar Treino</button>
+    <button class="btn btn-primary btn-sm" onclick="closeModal('modal-dia');abrirModalTreinoNaData(currentCalDate)">+ Adicionar Treino</button>
   </div>
 </div>
 </div>
@@ -1860,6 +1860,10 @@ function onModalidadeChange() {
   const tipos = TIPOS_MAP[mod] || [];
   tipoGroup.style.display = tipos.length ? 'block' : 'none';
   tipoSel.innerHTML = '<option value="">Selecione...</option>' + tipos.map(t => `<option value="${t}">${t}</option>`).join('');
+  // Pré-selecionar Manhã Checkmat para Jiu-Jitsu
+  if (mod === 'jiu_jitsu') {
+    tipoSel.value = 'Manhã Checkmat';
+  }
 
   // Cardio: mostra campos de tempo e km
   if (mod === 'cardio') {
@@ -1932,6 +1936,13 @@ function salvarTreino() {
   resetTreinoForm();
   renderAll();
   showToast(id ? 'Treino atualizado!' : 'Treino salvo! 💪');
+}
+
+function abrirModalTreinoNaData(dateStr) {
+  resetTreinoForm();
+  // Preencher com a data clicada
+  document.getElementById('t-data').value = dateStr || today();
+  openModal('modal-treino');
 }
 
 function resetTreinoForm() {
@@ -2870,7 +2881,10 @@ function calNav(dir) {
   renderCalendario();
 }
 
+let currentCalDate = today();
+
 function showDiaTreinos(dateStr) {
+  currentCalDate = dateStr;
   const treinos = getTreinosFiltrados().filter(t => normalizeDate(t.data) === dateStr);
   const MODAL_MAP = { jiu_jitsu: 'Jiu-Jitsu', cardio: 'Cardio', puxar_ferro: 'Ferro', natacao: 'Natação', futebol: 'Futebol' };
   const EMOJI_MAP = { jiu_jitsu: '🥋', cardio: '🏃', puxar_ferro: '💪', natacao: '🏊', futebol: '⚽' };
