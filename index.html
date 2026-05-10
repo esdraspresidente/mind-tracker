@@ -807,7 +807,7 @@ textarea.form-input{resize:vertical;min-height:70px}
       <button id="menu-btn" onclick="openSidebar()">☰</button>
       <div id="page-title">Treinos</div>
       <div class="topbar-actions">
-        <button class="topbar-btn sync-btn" id="sync-btn" onclick="GDRIVE.toggleAuth()">
+        <button class="topbar-btn sync-btn" id="sync-btn" onclick="SYNC.setStatus('connected')">
           <span class="sync-dot"></span>
           <span id="sync-label">Conectar Drive</span>
         </button>
@@ -1377,7 +1377,7 @@ function loadDB() {
 
 function saveDB() {
   localStorage.setItem(DB_KEY, JSON.stringify(db));
-  setTimeout(() => { if (typeof GDRIVE !== "undefined") GDRIVE.saveData(db); }, 0);
+  setTimeout(() => { if (typeof SYNC !== "undefined") SYNC.save(db); }, 0);
 }
 
 function getDefaultDB() {
@@ -3420,169 +3420,122 @@ console.log('%cDados persistidos no localStorage', 'color:#9999b8;font-size:12px
 
 
 // ═══════════════════════════════════════════════════════
-// GOOGLE DRIVE SYNC
+// SYNC — Supabase (sem token, sem expiração)
 // ═══════════════════════════════════════════════════════
-const GDRIVE = {
-  CLIENT_ID: '992309420514-quj6g4psr2r1qk970llg9266hiqdte52.apps.googleusercontent.com',
-  SCOPES: 'https://www.googleapis.com/auth/drive.appdata',
-  FILE_NAME: 'mind_tracker_data.json',
-  fileId: null,
-  tokenClient: null,
-  ready: false,
-  saveTimer: null,
 
-  init() {
-    const waitForLibs = setInterval(() => {
-      if (typeof gapi !== 'undefined' && typeof google !== 'undefined') {
-        clearInterval(waitForLibs);
-        gapi.load('client', async () => {
-          await gapi.client.init({
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-          });
-          this.ready = true;
-          this.tokenClient = google.accounts.oauth2.initTokenClient({
-            client_id: this.CLIENT_ID,
-            scope: this.SCOPES,
-            callback: (resp) => {
-              if (resp.error) { this.setStatus('error'); return; }
-              localStorage.setItem('gdrive_token', JSON.stringify(gapi.client.getToken()));
-              this.onSignedIn();
-            },
-          });
-          // Auto-reconecta se havia token salvo
-          const saved = localStorage.getItem('gdrive_token');
-          if (saved) {
-            try {
-              gapi.client.setToken(JSON.parse(saved));
-              this.onSignedIn();
-            } catch(e) {
-              localStorage.removeItem('gdrive_token');
-            }
-          }
-        });
-      }
-    }, 200);
-  },
+const SYNC = {
+  _interval: null,
+  _saving: false,
+  _lastSaved: null,
 
-  toggleAuth() {
-    if (gapi.client.getToken()) {
-      if (confirm('Desconectar o Google Drive?')) this.signOut();
-    } else {
-      if (!this.ready) { showToast('Aguarde, carregando...'); return; }
-      this.tokenClient.requestAccessToken({ prompt: '' });
+  async load() {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/mind_tracker_data?id=eq.esdras&select=data,updated_at`,
+        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+      );
+      const rows = await res.json();
+      if (!rows || !rows.length || !rows[0].data) return null;
+      const data = rows[0].data;
+      if (data && data.treinos !== undefined) return data;
+      return null;
+    } catch(e) {
+      console.warn('Supabase load falhou:', e);
+      return null;
     }
   },
 
-  signOut() {
-    const token = gapi.client.getToken();
-    if (token) {
-      google.accounts.oauth2.revoke(token.access_token, () => {});
-      gapi.client.setToken('');
+  async save(data) {
+    if (this._saving) return;
+    this._saving = true;
+    try {
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/mind_tracker_data?id=eq.esdras`,
+        {
+          method: 'PATCH',
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({ data, updated_at: new Date().toISOString() }),
+        }
+      );
+      this._lastSaved = Date.now();
+      this.setStatus('connected');
+    } catch(e) {
+      console.warn('Supabase save falhou:', e);
+      this.setStatus('error');
     }
-    localStorage.removeItem('gdrive_token');
-    this.fileId = null;
-    this.setStatus('disconnected');
+    this._saving = false;
   },
 
-  async onSignedIn() {
+  async init() {
     this.setStatus('syncing');
-    await this.findOrCreateFile();
-    const driveData = await this.loadData();
-    const localData = db;
+    const remoteData = await this.load();
+    if (remoteData) {
+      // Merge inteligente com dados locais
+      const local = db;
+      const merged = { ...remoteData };
 
-    if (driveData) {
-      // Merge inteligente: combina Drive + local sem perder dados
-      const merged = { ...driveData };
-
-      // Treinos: pega todos únicos de ambos
       const treinosMap = {};
-      [...(driveData.treinos || []), ...(localData.treinos || [])].forEach(t => {
+      [...(remoteData.treinos || []), ...(local.treinos || [])].forEach(t => {
         treinosMap[t.id] = t;
       });
       merged.treinos = Object.values(treinosMap);
-
-      // Atividades diárias: merge por data (local tem prioridade se mais recente)
-      merged.atividadesDiarias = { ...(driveData.atividadesDiarias || {}), ...(localData.atividadesDiarias || {}) };
-
-      // Progressao: pega o maior XP entre os dois
-      if (localData.progressao && localData.progressao.xpTotal > (driveData.progressao?.xpTotal || 0)) {
-        merged.progressao = localData.progressao;
+      merged.atividadesDiarias = { ...(remoteData.atividadesDiarias || {}), ...(local.atividadesDiarias || {}) };
+      if ((local.progressao?.xpTotal || 0) > (remoteData.progressao?.xpTotal || 0)) {
+        merged.progressao = local.progressao;
       }
-
-      // Livros e sparring: pega local se tiver mais itens
-      if ((localData.livros || []).length > (driveData.livros || []).length) {
-        merged.livros = localData.livros;
-      }
-      if ((localData.sparring || []).length > (driveData.sparring || []).length) {
-        merged.sparring = localData.sparring;
-      }
+      if ((local.livros || []).length > (remoteData.livros || []).length) merged.livros = local.livros;
+      if ((local.sparring || []).length > (remoteData.sparring || []).length) merged.sparring = local.sparring;
 
       db = merged;
       localStorage.setItem(DB_KEY, JSON.stringify(db));
-      await this.saveData(db); // Sobe o merge de volta pro Drive
       renderAll();
-      showToast('✅ Dados sincronizados do Drive!');
     } else {
-      // Drive vazio — sobe dados locais
-      await this.saveData(db);
-      showToast('☁️ Dados locais enviados ao Drive!');
+      // Supabase vazio — sobe dados locais
+      await this.save(db);
     }
     this.setStatus('connected');
-    // Iniciar sync automático a cada 30 segundos
-    if (this._syncInterval) clearInterval(this._syncInterval);
-    this._syncInterval = setInterval(() => this.autoSync(), 30000);
+
+    // Sync automático a cada 30 segundos
+    if (this._interval) clearInterval(this._interval);
+    this._interval = setInterval(() => this.autoSync(), 30000);
   },
 
-  async findOrCreateFile() {
+  async autoSync() {
     try {
-      const res = await gapi.client.drive.files.list({
-        spaces: 'appDataFolder',
-        fields: 'files(id,name,modifiedTime)',
-        q: `name='${this.FILE_NAME}'`,
+      const remoteData = await this.load();
+      if (!remoteData) return;
+
+      const local = db;
+      const merged = { ...remoteData };
+
+      const treinosMap = {};
+      [...(remoteData.treinos || []), ...(local.treinos || [])].forEach(t => {
+        treinosMap[t.id] = t;
       });
-      if (res.result.files.length > 0) {
-        this.fileId = res.result.files[0].id;
-      } else {
-        const created = await gapi.client.drive.files.create({
-          resource: { name: this.FILE_NAME, parents: ['appDataFolder'] },
-          fields: 'id',
-        });
-        this.fileId = created.result.id;
+      merged.treinos = Object.values(treinosMap);
+      merged.atividadesDiarias = { ...(remoteData.atividadesDiarias || {}), ...(local.atividadesDiarias || {}) };
+      if ((local.progressao?.xpTotal || 0) > (remoteData.progressao?.xpTotal || 0)) {
+        merged.progressao = local.progressao;
       }
-    } catch(e) { this.setStatus('error'); }
-  },
+      if ((local.livros || []).length > (remoteData.livros || []).length) merged.livros = local.livros;
+      if ((local.sparring || []).length > (remoteData.sparring || []).length) merged.sparring = local.sparring;
 
-  async loadData() {
-    if (!this.fileId) return null;
-    try {
-      const res = await gapi.client.drive.files.get({ fileId: this.fileId, alt: 'media' });
-      const data = typeof res.result === 'string' ? JSON.parse(res.result) : res.result;
-      // Retorna apenas se tem dados reais
-      if (data && data.treinos !== undefined) return data;
-      return null;
-    } catch(e) { return null; }
-  },
-
-  saveData(data) {
-    if (!this.fileId || !gapi.client.getToken()) return;
-    // Debounce — espera 1.5s após última mudança para salvar
-    clearTimeout(this.saveTimer);
-    this.setStatus('syncing');
-    this.saveTimer = setTimeout(async () => {
-      try {
-        await gapi.client.request({
-          path: `/upload/drive/v3/files/${this.fileId}`,
-          method: 'PATCH',
-          params: { uploadType: 'media' },
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...data, _lastSync: new Date().toISOString() }),
-        });
-        this.setStatus('connected');
-      } catch(e) {
-        this.setStatus('error');
-        console.error('Drive save error:', e);
+      const localJSON = JSON.stringify(db);
+      const mergedJSON = JSON.stringify(merged);
+      if (localJSON !== mergedJSON) {
+        db = merged;
+        localStorage.setItem(DB_KEY, mergedJSON);
+        renderAll();
+        console.log('%c🔄 Sync automático — dados atualizados!', 'color:#00e676');
       }
-    }, 500);
+    } catch(e) {
+      console.warn('AutoSync falhou:', e);
+    }
   },
 
   setStatus(status) {
@@ -3591,76 +3544,24 @@ const GDRIVE = {
     if (!btn || !label) return;
     btn.className = 'sync-btn';
     const map = {
-      disconnected: { cls: '',           icon: '☁️', text: 'Conectar Drive' },
-      syncing:      { cls: 'syncing',    icon: '🔄', text: 'Sincronizando...' },
-      connected:    { cls: 'connected',  icon: '✅', text: 'Drive Sync' },
-      error:        { cls: 'error',      icon: '❌', text: 'Erro Drive' },
+      syncing:   { cls: 'syncing',   text: 'Sincronizando...' },
+      connected: { cls: 'connected', text: '☁️ Sync ativo' },
+      error:     { cls: 'error',     text: '❌ Erro Sync' },
     };
-    const s = map[status] || map.disconnected;
+    const s = map[status] || map.connected;
     if (s.cls) btn.classList.add(s.cls);
     label.textContent = s.text;
   },
-
-  // Sync automático — puxa dados do Drive a cada 30 segundos
-  async autoSync() {
-    const token = gapi.client.getToken();
-    if (!this.fileId || !token) {
-      console.log('%c⚠️ AutoSync ignorado — sem fileId ou token', 'color:#ffd600');
-      // Tentar reconectar com token salvo
-      const saved = localStorage.getItem('gdrive_token');
-      if (saved) {
-        try {
-          gapi.client.setToken(JSON.parse(saved));
-          await this.findOrCreateFile();
-        } catch(e) {}
-      }
-      return;
-    }
-    try {
-      const driveData = await this.loadData();
-      if (!driveData) {
-        console.log('%c⚠️ AutoSync — Drive sem dados', 'color:#ffd600');
-        return;
-      }
-      console.log('%c🔄 AutoSync — verificando...', 'color:#4d8fff');
-
-      // Merge com dados locais
-      const localData = db;
-      const merged = { ...driveData };
-
-      const treinosMap = {};
-      [...(driveData.treinos || []), ...(localData.treinos || [])].forEach(t => {
-        treinosMap[t.id] = t;
-      });
-      merged.treinos = Object.values(treinosMap);
-      merged.atividadesDiarias = { ...(driveData.atividadesDiarias || {}), ...(localData.atividadesDiarias || {}) };
-
-      if ((localData.progressao?.xpTotal || 0) > (driveData.progressao?.xpTotal || 0)) {
-        merged.progressao = localData.progressao;
-      }
-      if ((localData.livros || []).length > (driveData.livros || []).length) {
-        merged.livros = localData.livros;
-      }
-      if ((localData.sparring || []).length > (driveData.sparring || []).length) {
-        merged.sparring = localData.sparring;
-      }
-
-      // Só atualiza se tiver diferença real
-      const localJSON = JSON.stringify(db);
-      const mergedJSON = JSON.stringify(merged);
-      if (localJSON !== mergedJSON) {
-        db = merged;
-        localStorage.setItem('mindtracker2026', mergedJSON);
-        renderAll();
-        console.log('%c🔄 Sync automático — dados atualizados!', 'color:#00e676');
-      }
-    } catch(e) {
-      console.warn('AutoSync falhou:', e);
-    }
-  },
 };
 
-window.addEventListener("load", () => GDRIVE.init());
+// Manter GDRIVE como objeto vazio para não quebrar referências
+const GDRIVE = {
+  toggleAuth() { showToast('Sync agora usa Supabase!'); },
+  saveData(data) { SYNC.save(data); },
+  setStatus() {},
+};
+
+window.addEventListener("load", () => SYNC.init());
 
 
 // ═══════════════════════════════════════════════════════
