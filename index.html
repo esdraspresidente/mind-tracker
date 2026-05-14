@@ -3479,17 +3479,34 @@ const SYNC = {
       const local = db;
       const merged = { ...remoteData };
 
-      const treinosMap = {};
-      [...(remoteData.treinos || []), ...(local.treinos || [])].forEach(t => {
-        treinosMap[t.id] = t;
+      // Merge por ID — nunca perde dado de nenhum lado
+      const mergeById = (arr1, arr2) => {
+        const map = {};
+        [...(arr1 || []), ...(arr2 || [])].forEach(item => {
+          if (item && item.id) map[item.id] = item;
+        });
+        return Object.values(map);
+      };
+
+      merged.treinos = mergeById(remoteData.treinos, local.treinos);
+      merged.livros = mergeById(remoteData.livros, local.livros);
+      merged.sparring = mergeById(remoteData.sparring, local.sparring);
+
+      // atividadesDiarias: mescla chave a chave, local tem prioridade
+      const remAD = remoteData.atividadesDiarias || {};
+      const locAD = local.atividadesDiarias || {};
+      const allDays = new Set([...Object.keys(remAD), ...Object.keys(locAD)]);
+      merged.atividadesDiarias = {};
+      allDays.forEach(day => {
+        const remDay = remAD[day] || {};
+        const locDay = locAD[day] || {};
+        merged.atividadesDiarias[day] = { ...remDay, ...locDay };
       });
-      merged.treinos = Object.values(treinosMap);
-      merged.atividadesDiarias = { ...(remoteData.atividadesDiarias || {}), ...(local.atividadesDiarias || {}) };
+
+      // progressao: maior XP vence
       if ((local.progressao?.xpTotal || 0) > (remoteData.progressao?.xpTotal || 0)) {
         merged.progressao = local.progressao;
       }
-      if ((local.livros || []).length > (remoteData.livros || []).length) merged.livros = local.livros;
-      if ((local.sparring || []).length > (remoteData.sparring || []).length) merged.sparring = local.sparring;
 
       db = merged;
       localStorage.setItem(DB_KEY, JSON.stringify(db));
@@ -3513,17 +3530,34 @@ const SYNC = {
       const local = db;
       const merged = { ...remoteData };
 
-      const treinosMap = {};
-      [...(remoteData.treinos || []), ...(local.treinos || [])].forEach(t => {
-        treinosMap[t.id] = t;
+      // Merge por ID — nunca perde dado de nenhum lado
+      const mergeById = (arr1, arr2) => {
+        const map = {};
+        [...(arr1 || []), ...(arr2 || [])].forEach(item => {
+          if (item && item.id) map[item.id] = item;
+        });
+        return Object.values(map);
+      };
+
+      merged.treinos = mergeById(remoteData.treinos, local.treinos);
+      merged.livros = mergeById(remoteData.livros, local.livros);
+      merged.sparring = mergeById(remoteData.sparring, local.sparring);
+
+      // atividadesDiarias: mescla chave a chave, local tem prioridade
+      const remAD = remoteData.atividadesDiarias || {};
+      const locAD = local.atividadesDiarias || {};
+      const allDays = new Set([...Object.keys(remAD), ...Object.keys(locAD)]);
+      merged.atividadesDiarias = {};
+      allDays.forEach(day => {
+        const remDay = remAD[day] || {};
+        const locDay = locAD[day] || {};
+        merged.atividadesDiarias[day] = { ...remDay, ...locDay };
       });
-      merged.treinos = Object.values(treinosMap);
-      merged.atividadesDiarias = { ...(remoteData.atividadesDiarias || {}), ...(local.atividadesDiarias || {}) };
+
+      // progressao: maior XP vence
       if ((local.progressao?.xpTotal || 0) > (remoteData.progressao?.xpTotal || 0)) {
         merged.progressao = local.progressao;
       }
-      if ((local.livros || []).length > (remoteData.livros || []).length) merged.livros = local.livros;
-      if ((local.sparring || []).length > (remoteData.sparring || []).length) merged.sparring = local.sparring;
 
       const localJSON = JSON.stringify(db);
       const mergedJSON = JSON.stringify(merged);
