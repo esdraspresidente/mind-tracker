@@ -3438,6 +3438,7 @@ console.log('%cDados persistidos no localStorage', 'color:#9999b8;font-size:12px
 const SYNC = {
   _interval: null,
   _saving: false,
+  _pendingData: null,
   _lastSaved: null,
 
   async load() {
@@ -3458,27 +3459,36 @@ const SYNC = {
   },
 
   async save(data) {
+    // Guarda sempre o dado mais recente pendente
+    this._pendingData = data;
+    // Se já está salvando, apenas atualiza o pendente e sai — vai salvar no finally
     if (this._saving) return;
     this._saving = true;
     try {
-      await fetch(
-        `${SUPABASE_URL}/rest/v1/mind_tracker_data?id=eq.esdras`,
-        {
-          method: 'PATCH',
-          headers: {
-            apikey: SUPABASE_KEY,
-            Authorization: `Bearer ${SUPABASE_KEY}`,
-            'Content-Type': 'application/json',
-            Prefer: 'return=minimal',
-          },
-          body: JSON.stringify({ data, updated_at: new Date().toISOString() }),
-        }
-      );
-      this._lastSaved = Date.now();
-      this.setStatus('connected');
+      // Loop: enquanto houver dado pendente, salva
+      while (this._pendingData) {
+        const toSave = this._pendingData;
+        this._pendingData = null;
+        await fetch(
+          `${SUPABASE_URL}/rest/v1/mind_tracker_data?id=eq.esdras`,
+          {
+            method: 'PATCH',
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify({ data: toSave, updated_at: new Date().toISOString() }),
+          }
+        );
+        this._lastSaved = Date.now();
+        this.setStatus('connected');
+      }
     } catch(e) {
       console.warn('Supabase save falhou:', e);
       this.setStatus('error');
+      this._pendingData = null;
     }
     this._saving = false;
   },
