@@ -543,6 +543,14 @@ textarea.form-input{resize:vertical;min-height:70px}
 .resultado-btn[data-val="draw"].active{border-color:var(--yellow);color:var(--yellow);background:var(--yellow-dim)}
 .fin-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
 .fin-row select,.fin-row input{flex:1;padding:6px 8px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:12px}
+.lance-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.lance-row:last-child{border-bottom:none}
+.lance-label{font-size:12px;flex:1}
+.lance-btn{padding:7px 14px;border-radius:var(--r-sm);font-size:11px;font-weight:700;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2);transition:var(--t)}
+.lance-btn.eu{border-color:var(--green-dim);color:var(--green)}
+.lance-btn.eu:active{background:var(--green-dim)}
+.lance-btn.adv{border-color:var(--red-dim);color:var(--red)}
+.lance-btn.adv:active{background:var(--red-dim)}
 
 /* ── XP / HÁBITOS ── */
 .xp-card{
@@ -1298,23 +1306,26 @@ textarea.form-input{resize:vertical;min-height:70px}
           <button class="resultado-btn" data-val="won" onclick="selectResultado('won')">🔥 Ganhou</button>
         </div>
       </div>
-      <div class="form-group"><label class="form-label">Placar</label>
-        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center">
-          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Eu</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
-              <div><div style="font-size:9px;color:var(--text3)">Pts</div><input type="number" id="meus-pts" class="form-input" style="padding:4px;text-align:center" value="0" min="0"></div>
-              <div><div style="font-size:9px;color:var(--text3)">Vant</div><input type="number" id="meus-vant" class="form-input" style="padding:4px;text-align:center" value="0" min="0"></div>
-              <div><div style="font-size:9px;color:var(--text3)">Pen</div><input type="number" id="meus-pen" class="form-input" style="padding:4px;text-align:center" value="0" min="0"></div>
-            </div></div>
-          <div style="font-size:20px;color:var(--text3)">×</div>
-          <div style="text-align:center"><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Adv</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
-              <div><div style="font-size:9px;color:var(--text3)">Pts</div><input type="number" id="adv-pts" class="form-input" style="padding:4px;text-align:center" value="0" min="0"></div>
-              <div><div style="font-size:9px;color:var(--text3)">Vant</div><input type="number" id="adv-vant" class="form-input" style="padding:4px;text-align:center" value="0" min="0"></div>
-              <div><div style="font-size:9px;color:var(--text3)">Pen</div><input type="number" id="adv-pen" class="form-input" style="padding:4px;text-align:center" value="0" min="0"></div>
-            </div></div>
+      <div class="form-group">
+        <label class="form-label">🎯 Pontuação (lance a lance)</label>
+        <div id="lance-buttons"></div>
+      </div>
+      <div id="placar-live"></div>
+      <div class="form-group">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <label class="form-label" style="margin:0">Histórico do lance</label>
+          <button class="btn btn-ghost btn-sm" onclick="if(confirm('Limpar todos os lances desta rola?')){_lances=[];renderLances();}">🗑️ Limpar</button>
+        </div>
+        <div id="lances-list"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Penalidades (cartões)</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Eu</div><input type="number" id="meus-pen" class="form-input" value="0" min="0"></div>
+          <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Adversário</div><input type="number" id="adv-pen" class="form-input" value="0" min="0"></div>
         </div>
       </div>
+      <input type="hidden" id="meus-pts" value="0"><input type="hidden" id="meus-vant" value="0">
+      <input type="hidden" id="adv-pts" value="0"><input type="hidden" id="adv-vant" value="0">
       <div class="form-group">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
           <label class="form-label" style="margin:0">Finalizações</label><button class="btn btn-ghost btn-sm" onclick="addFinalizacao()">+ Add</button>
@@ -3622,9 +3633,18 @@ window.addEventListener("load", () => SYNC.init());
 
 const BELT_COLORS = { branca:'#e0e0e0', verde:'#00e676', azul:'#4d8fff', roxa:'#b347ff', marrom:'#a0522d', preta:'#222' };
 const FINALIZACOES = ['Armlock','Kimura','Americana','Triângulo','Omoplata','Guilhotina','D\'Arce','Rear Naked Choke','Leg Lock','Heel Hook','Katagatame','Brabo Choke','Outro'];
+const LANCES_TIPOS = [
+  {tipo:'Queda / Raspagem', pts:2, vant:0, emoji:'🦵'},
+  {tipo:'Joelho na Barriga', pts:2, vant:0, emoji:'🔺'},
+  {tipo:'Passagem de Guarda', pts:3, vant:0, emoji:'🛡️'},
+  {tipo:'Montada', pts:4, vant:0, emoji:'👑'},
+  {tipo:'Pegada de Costas', pts:4, vant:0, emoji:'🔙'},
+  {tipo:'Vantagem', pts:0, vant:1, emoji:'⭐'},
+];
 
 var _sparringAdvAtivo = null;
 var _finalizacoes = [];
+var _lances = [];
 
 function renderSparring() {
   renderAdversarios();
@@ -3790,6 +3810,7 @@ function renderDetalheAdv(advId) {
             </div>
           </div>
           ${fins.length ? `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px">${fins.map(f=>`<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:var(--red-dim);color:var(--red)">${f.quem==='eu'?'Eu':'Adv'}: ${f.tipo}</span>`).join('')}</div>` : ''}
+          ${(rola.lances && rola.lances.length) ? `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px">${rola.lances.map(l=>`<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${l.quem==='eu'?'var(--green-dim)':'var(--red-dim)'};color:${l.quem==='eu'?'var(--green)':'var(--red)'}">${l.emoji||''} ${l.tipo}${l.pts?` +${l.pts}p`:''}${l.vant?` +${l.vant}v`:''}</span>`).join('')}</div>` : ''}
           ${rola.nota ? `<div style="margin-top:6px;font-size:12px;color:var(--text3);font-style:italic">"${rola.nota}"</div>` : ''}
         </div>`;
       }).join('')
@@ -3923,17 +3944,20 @@ function excluirAdversario(id) {
 // ── CRUD Rola ──
 function novaRola(advId) {
   _finalizacoes = [];
+  _lances = [];
   document.getElementById('rola-id').value = '';
   document.getElementById('rola-adv-id').value = advId;
   document.getElementById('rola-data').value = today();
   document.getElementById('rola-duracao').value = 6;
-  document.getElementById('meus-pts').value = 0; document.getElementById('meus-vant').value = 0; document.getElementById('meus-pen').value = 0;
-  document.getElementById('adv-pts').value = 0; document.getElementById('adv-vant').value = 0; document.getElementById('adv-pen').value = 0;
+  document.getElementById('meus-pen').value = 0;
+  document.getElementById('adv-pen').value = 0;
   document.getElementById('rola-posicao').value = 'Guard';
   document.getElementById('rola-gi').value = 'gi';
   document.getElementById('rola-nota').value = '';
   selectResultado('draw');
   renderFinalizacoes();
+  renderLanceButtons();
+  renderLances();
   document.getElementById('modal-rola').classList.add('open');
 }
 
@@ -3942,21 +3966,24 @@ function editarRola(advId, rolaId) {
   const rola = adv?.roles?.find(r => r.id === rolaId);
   if (!rola) return;
   _finalizacoes = JSON.parse(JSON.stringify(rola.finalizacoes || []));
+  _lances = JSON.parse(JSON.stringify(rola.lances || []));
+  if (!_lances.length && ((rola.meusPts||0) || (rola.meusVant||0) || (rola.advPts||0) || (rola.advVant||0))) {
+    if ((rola.meusPts||0) || (rola.meusVant||0)) _lances.push({ quem:'eu', tipo:'Placar registrado', pts: rola.meusPts||0, vant: rola.meusVant||0, emoji:'📊' });
+    if ((rola.advPts||0) || (rola.advVant||0)) _lances.push({ quem:'adv', tipo:'Placar registrado', pts: rola.advPts||0, vant: rola.advVant||0, emoji:'📊' });
+  }
   document.getElementById('rola-id').value = rolaId;
   document.getElementById('rola-adv-id').value = advId;
   document.getElementById('rola-data').value = rola.data;
   document.getElementById('rola-duracao').value = rola.duracao || 6;
-  document.getElementById('meus-pts').value = rola.meusPts || 0;
-  document.getElementById('meus-vant').value = rola.meusVant || 0;
   document.getElementById('meus-pen').value = rola.meusPen || 0;
-  document.getElementById('adv-pts').value = rola.advPts || 0;
-  document.getElementById('adv-vant').value = rola.advVant || 0;
   document.getElementById('adv-pen').value = rola.advPen || 0;
   document.getElementById('rola-posicao').value = rola.posicao || 'Guard';
   document.getElementById('rola-gi').value = rola.gi || 'gi';
   document.getElementById('rola-nota').value = rola.nota || '';
   selectResultado(rola.resultado || 'draw');
   renderFinalizacoes();
+  renderLanceButtons();
+  renderLances();
   document.getElementById('modal-rola').classList.add('open');
 }
 
@@ -3980,6 +4007,7 @@ function salvarRola() {
     gi: document.getElementById('rola-gi').value,
     nota: document.getElementById('rola-nota').value.trim(),
     finalizacoes: JSON.parse(JSON.stringify(_finalizacoes)),
+    lances: JSON.parse(JSON.stringify(_lances)),
   };
   const existIdx = (adv.roles || []).findIndex(r => r.id === rola.id);
   if (!adv.roles) adv.roles = [];
@@ -4022,6 +4050,65 @@ function renderFinalizacoes() {
         ${FINALIZACOES.map(t => `<option ${f.tipo===t?'selected':''}>${t}</option>`).join('')}
       </select>
       <button onclick="_finalizacoes.splice(${i},1);renderFinalizacoes()" style="padding:4px 8px;border-radius:6px;border:1px solid var(--red-dim);background:transparent;color:var(--red);cursor:pointer">×</button>
+    </div>`).join('');
+}
+
+// ── Pontuação lance a lance ──
+function renderLanceButtons() {
+  const el = document.getElementById('lance-buttons');
+  if (!el) return;
+  el.innerHTML = LANCES_TIPOS.map((l, i) => `
+    <div class="lance-row">
+      <div class="lance-label">${l.emoji} ${l.tipo} <span style="color:var(--text3)">(${l.pts ? '+' + l.pts + 'pt' + (l.pts>1?'s':'') : '+' + l.vant + ' vant'})</span></div>
+      <div style="display:flex;gap:6px">
+        <button type="button" class="lance-btn eu" onclick="addLance('eu',${i})">Eu</button>
+        <button type="button" class="lance-btn adv" onclick="addLance('adv',${i})">Adv</button>
+      </div>
+    </div>`).join('');
+}
+
+function addLance(quem, idx) {
+  const l = LANCES_TIPOS[idx];
+  _lances.push({ quem, tipo: l.tipo, pts: l.pts, vant: l.vant, emoji: l.emoji });
+  renderLances();
+}
+
+function removeLance(i) {
+  _lances.splice(i, 1);
+  renderLances();
+}
+
+function renderLances() {
+  let mp = 0, mv = 0, ap = 0, av = 0;
+  _lances.forEach(l => {
+    if (l.quem === 'eu') { mp += l.pts || 0; mv += l.vant || 0; }
+    else { ap += l.pts || 0; av += l.vant || 0; }
+  });
+  const mpEl = document.getElementById('meus-pts'), mvEl = document.getElementById('meus-vant');
+  const apEl = document.getElementById('adv-pts'), avEl = document.getElementById('adv-vant');
+  if (mpEl) mpEl.value = mp; if (mvEl) mvEl.value = mv;
+  if (apEl) apEl.value = ap; if (avEl) avEl.value = av;
+
+  const live = document.getElementById('placar-live');
+  if (live) live.innerHTML = `
+    <div style="display:flex;justify-content:space-around;align-items:center;padding:10px;border-radius:var(--r-sm);background:var(--bg2);margin:4px 0 14px">
+      <div style="text-align:center"><div style="font-size:10px;color:var(--text3);letter-spacing:.5px">VOCÊ</div><div style="font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:800;font-size:20px;color:var(--green)">${mp}<span style="font-size:11px;color:var(--text3)">p</span> ${mv}<span style="font-size:11px;color:var(--text3)">v</span></div></div>
+      <div style="font-size:16px;color:var(--text3)">×</div>
+      <div style="text-align:center"><div style="font-size:10px;color:var(--text3);letter-spacing:.5px">ADVERSÁRIO</div><div style="font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:800;font-size:20px;color:var(--red)">${ap}<span style="font-size:11px;color:var(--text3)">p</span> ${av}<span style="font-size:11px;color:var(--text3)">v</span></div></div>
+    </div>`;
+
+  const list = document.getElementById('lances-list');
+  if (!list) return;
+  if (!_lances.length) { list.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:4px 0">Nenhum lance ainda. Toque em "Eu" ou "Adv" acima conforme a rola for acontecendo.</div>'; return; }
+  list.innerHTML = _lances.map((l, i) => `
+    <div class="fin-row">
+      <div style="flex:1;font-size:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;color:var(--text3)">#${i + 1}</span>
+        <span style="font-weight:700;color:${l.quem === 'eu' ? 'var(--green)' : 'var(--red)'}">${l.quem === 'eu' ? 'Você' : 'Adv'}</span>
+        <span>${l.emoji || ''} ${l.tipo}</span>
+        <span style="color:var(--text3)">${l.pts ? ('+' + l.pts + 'p') : ''}${l.vant ? (' +' + l.vant + 'v') : ''}</span>
+      </div>
+      <button onclick="removeLance(${i})" style="padding:4px 8px;border-radius:6px;border:1px solid var(--red-dim);background:transparent;color:var(--red);cursor:pointer">×</button>
     </div>`).join('');
 }
 
