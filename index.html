@@ -3636,6 +3636,7 @@ const FINALIZACOES = ['Armlock','Kimura','Americana','Triângulo','Omoplata','Gu
 const LANCES_TIPOS = [
   {tipo:'Queda / Raspagem', pts:2, vant:0, emoji:'🦵'},
   {tipo:'Joelho na Barriga', pts:2, vant:0, emoji:'🔺'},
+  {tipo:'100kg (Side Control)', pts:0, vant:0, emoji:'💪'},
   {tipo:'Passagem de Guarda', pts:3, vant:0, emoji:'🛡️'},
   {tipo:'Montada', pts:4, vant:0, emoji:'👑'},
   {tipo:'Pegada de Costas', pts:4, vant:0, emoji:'🔙'},
@@ -4057,14 +4058,17 @@ function renderFinalizacoes() {
 function renderLanceButtons() {
   const el = document.getElementById('lance-buttons');
   if (!el) return;
-  el.innerHTML = LANCES_TIPOS.map((l, i) => `
+  el.innerHTML = LANCES_TIPOS.map((l, i) => {
+    const tag = l.pts ? `+${l.pts}pt${l.pts>1?'s':''}` : (l.vant ? `+${l.vant} vant` : 'posição');
+    return `
     <div class="lance-row">
-      <div class="lance-label">${l.emoji} ${l.tipo} <span style="color:var(--text3)">(${l.pts ? '+' + l.pts + 'pt' + (l.pts>1?'s':'') : '+' + l.vant + ' vant'})</span></div>
+      <div class="lance-label">${l.emoji} ${l.tipo} <span style="color:var(--text3)">(${tag})</span></div>
       <div style="display:flex;gap:6px">
         <button type="button" class="lance-btn eu" onclick="addLance('eu',${i})">Eu</button>
         <button type="button" class="lance-btn adv" onclick="addLance('adv',${i})">Adv</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function addLance(quem, idx) {
