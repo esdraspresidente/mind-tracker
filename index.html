@@ -3511,9 +3511,30 @@ const SYNC = {
         return Object.values(map);
       };
 
+      // Sparring: mescla adversários por ID E as rolas aninhadas por ID
+      const mergeSparring = (arr1, arr2) => {
+        const map = {};
+        [...(arr1 || []), ...(arr2 || [])].forEach(adv => {
+          if (!adv || !adv.id) return;
+          if (!map[adv.id]) {
+            map[adv.id] = { ...adv, roles: [...(adv.roles || [])] };
+          } else {
+            const ex = map[adv.id];
+            const merged = { ...ex, ...adv };
+            const rmap = {};
+            [...(ex.roles || []), ...(adv.roles || [])].forEach(r => {
+              if (r && r.id) rmap[r.id] = r;
+            });
+            merged.roles = Object.values(rmap);
+            map[adv.id] = merged;
+          }
+        });
+        return Object.values(map);
+      };
+
       merged.treinos = mergeById(remoteData.treinos, local.treinos);
       merged.livros = mergeById(remoteData.livros, local.livros);
-      merged.sparring = mergeById(remoteData.sparring, local.sparring);
+      merged.sparring = mergeSparring(remoteData.sparring, local.sparring);
 
       // atividadesDiarias: mescla chave a chave, local tem prioridade
       const remAD = remoteData.atividadesDiarias || {};
@@ -3565,9 +3586,30 @@ const SYNC = {
         return Object.values(map);
       };
 
+      // Sparring: mescla adversários por ID E as rolas aninhadas por ID
+      const mergeSparring = (arr1, arr2) => {
+        const map = {};
+        [...(arr1 || []), ...(arr2 || [])].forEach(adv => {
+          if (!adv || !adv.id) return;
+          if (!map[adv.id]) {
+            map[adv.id] = { ...adv, roles: [...(adv.roles || [])] };
+          } else {
+            const ex = map[adv.id];
+            const m = { ...ex, ...adv };
+            const rmap = {};
+            [...(ex.roles || []), ...(adv.roles || [])].forEach(r => {
+              if (r && r.id) rmap[r.id] = r;
+            });
+            m.roles = Object.values(rmap);
+            map[adv.id] = m;
+          }
+        });
+        return Object.values(map);
+      };
+
       merged.treinos = mergeById(remoteData.treinos, local.treinos);
       merged.livros = mergeById(remoteData.livros, local.livros);
-      merged.sparring = mergeById(remoteData.sparring, local.sparring);
+      merged.sparring = mergeSparring(remoteData.sparring, local.sparring);
 
       // atividadesDiarias: mescla chave a chave, local tem prioridade
       const remAD = remoteData.atividadesDiarias || {};
